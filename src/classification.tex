@@ -1,6 +1,48 @@
 %!TEX ROOT=../emnlp2023.tex
 
-\section{Classification}
+\section{Classification Step}
+In this section, we describe the classification component of our pipeline. First, we introduce chronologically the different approaches, the ensembles we tried, and their pros and cons. Then, we present evaluation results across different methods and various metrics. The goal of this step is to take the input claim and questions with answers provided by previous stages \todo{ref} and classify the claim into one of the four classes: \textit{Supported}, \textit{Refuted}, \textit{Not Enough Evidence}, or \textit{Conflicting Evidence/Cherrypicking} as defined by~\citealp{averitec2024}.
+
+\subsection{Approaches}
 \todo{Describe what was done +  why}
-\subsection{Evaluation}
-\todo{table with results + comments}
+
+In the earliest stages of experimenting, we utilized the classifier from baseline provided by authors\footnote{https://huggingface.co/chenxwh/AVeriTeC}~\cite{averitec2024}. This classifier is based on BERT~\cite{devlin-etal-2019-bert} model and was further fine-tuned on the AVeriTeC dataset~\cite{averitec2024}. It takes one claim and one question with its answer as input. The output of this encoder model (class logits) is then further processed by several if-clauses to determine the final label. To the best of our knowledge, the complete classifier outputs \textit{Not Enough Evidence} every time when the model predicts the \textit{Not Enough Evidence} or some 4th label (here we are not sure how the model was exactly fine-tuned) for any of the (up to 10) question-anwer pairs. It predicts \textit{Supported} if there is no \textit{Not Enough Evidence} prediction and at least one \textit{Supported} prediction and no \textit{Refuted} prediction. Then it predicts \textit{Refuted} if there are no \textit{Not Enough Evidence} or \textit{Supported} predictions and at least one \textit{Refuted} prediction. Otherwise, it predicts \textit{Conflicting Evidence/Cherrypicking}. Despite considerable effort, we were unable to understand why and how was the model trained on four labels and also what is the exact background of this, at least from our point of view, ad-hoc post-processing logic.
+
+We argue that the post-processing logic should be changed so that \textit{Not Enough Evidence} is predicted only if there is no other label to predicted. We think that for example if among the predictions for question-answer pairs there is one \textit{Not Enough Evidence} prediction and the rest are \textit{Supported} predictions, the final prediction should be \textit{Supported} and not \textit{Not Enough Evidence} as in the original logic. We did implemented this change (see listing~\ref{lst:post-processing}) and surprisingly it did not improve the results as the number of \textit{Not Enough Evidence} class has fallen significantly \todo{numbers}. Despite that, we still think that this change is more logical and should be used in the future.
+
+\begin{figure}
+    \begin{lstlisting}[language=Python]
+if has_true and has_false:
+  answer = 3
+elif has_true and not has_false:
+  answer = 0
+elif not has_true and has_false:
+  answer = 1
+else:
+ answer = 2 #otherwise NEI
+        \end{lstlisting}
+    \caption{Our proposed post-processing logic} 
+    \label{lst:post-processing}       
+\end{figure}
+
+Moreover, we think that the model should be trained only on three labels because only three are used. We tried own fine-tuning of a newer encoder model DeBERTaV3~\cite{he2023debertav3improvingdebertausing} on only three labels and the results were better \todo{numbers}.
+
+All of the results of our preliminary experimenting were however not satysfing and we decided to try more radically different approaches that are described in the following sections.
+
+\subsubsection*{Concatenation and Four Classes Classificator}
+\todo{better name}
+\todo{describe, models, Concatenation, sep-concatenation, random order, four classes!, Mistral, DeBERTaV3, metion Transformers-HF}
+
+\subsubsection*{LLM Classifiers}
+\todo{describe - likert motivation, GPT4o, Claude 3?}
+\todo{try "opensource" LLMs? - maybe own section in an Appendix?}
+
+\subsubsection*{Ensembling}
+\todo{describe ensembling - average, weighted average, stacking using logreg}
+
+\subsubsection*{Conflicting Evidence/Cherrypicking Detection}
+\todo{Bryce's idea - tf-idf + randomforests?, future works-new paper (not exactly what we are doing now, but interesting)~\cite{jaradat2024contextawaredetectioncherrypickingnews}}
+
+
+\subsection{Classification Evaluation}
+\todo{table with comparative results + comments}
