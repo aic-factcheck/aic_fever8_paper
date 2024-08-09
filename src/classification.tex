@@ -36,7 +36,7 @@ Our first approach is to finetune a text classification model on all four classe
 
 As models, we chose DeBERTaV3~\cite{he2023debertav3improvingdebertausing} in two variants: the original large one\footnote{https://huggingface.co/microsoft/deberta-v3-large} and one pre-finetuned on NLI tasks\footnote{https://huggingface.co/cross-encoder/nli-deberta-v3-large}, and also Mistral-7B-v0.3 model\footnote{https://huggingface.co/mistralai/Mistral-7B-v0.3} with a classification head (MistralForSequenceClassification) provided by the Huggingface Transformers library~\cite{wolf-etal-2020-transformers} that utilizes the last token. In the preliminary testing phase, the original DeBERTaV3 Large performed the best and was used in all other experimental settings.
 
-From the approaches described above, we achieved the best results with the original order achieving 0.71 macro $F_1$ score. The separator model achieved a comparable 0.70 macro $F_1$ score, and the random order model performed worse with a 0.67 macro $F_1$ score. We provide our best DeBERTaV3 finetuned model publicly in a Huggingface repository\footnote{\todo{create repo}}.
+From the approaches described above, we achieved the best results with the original order achieving 0.71 macro $F_1$ score. The separator model achieved a comparable 0.70 macro $F_1$ score, and the random order model performed worse with a 0.67 macro $F_1$ score. We provide our best DeBERTaV3 finetuned model publicly in a Huggingface repository\footnote{\todo{https://huggingface.co/ctu-aic/deberta-v3-large-AVeriTeC-nli}}.
 
 \subsubsection*{LLM Classifiers}
 \todo{describe - likert motivation, GPT4o, Claude 3?}
