@@ -32,6 +32,11 @@ All of the results of our preliminary experimenting were however not satysfing a
 \subsubsection*{Concatenation and Four Classes Classificator}
 \todo{better name}
 \todo{describe, models, Concatenation, sep-concatenation, random order, four classes!, Mistral, DeBERTaV3, metion Transformers-HF}
+Our first approach is to finetune a text classification model on all four classes directly. However, this means that as evidence, we must feed the model with all question-answer pairs at once to classify \textit{Conflicting Evidence/Cherrypicking} correctly. For that, we tried several options. First, we concatenated all of them using single blank space in the order they are provided in the dataset. This should work because we expect that annotators created the question-answer pairs usually in a specific order. The second option we tried is concatenation using a separator \texttt{[SEP]} token again in the original order. This option utilizes the model's knowledge about separator tokens and allows it to know exact question-answer borders. The last option we tried is to randomly select more orders of the question-answer pairs (all combinations computation is not feasible - up to $10!$ of combinations).
+
+As models, we chose DeBERTaV3~\cite{he2023debertav3improvingdebertausing} in two variants: the original large one\footnote{https://huggingface.co/microsoft/deberta-v3-large} and one pre-finetuned on NLI tasks\footnote{https://huggingface.co/cross-encoder/nli-deberta-v3-large}, and also Mistral-7B-v0.3 model\footnote{https://huggingface.co/mistralai/Mistral-7B-v0.3} with a classification head (MistralForSequenceClassification) provided by the Huggingface Transformers library~\cite{wolf-etal-2020-transformers} that utilizes the last token. In the preliminary testing phase, the original DeBERTaV3 Large performed the best and was used in all other experimental settings.
+
+From the approaches described above, we achieved the best results with the original order achieving 0.71 macro $F_1$ score. The separator model achieved a comparable 0.70 macro $F_1$ score, and the random order model performed worse with a 0.67 macro $F_1$ score. We provide our best DeBERTaV3 finetuned model publicly in a Huggingface repository\footnote{\todo{create repo}}.
 
 \subsubsection*{LLM Classifiers}
 \todo{describe - likert motivation, GPT4o, Claude 3?}
@@ -41,6 +46,7 @@ All of the results of our preliminary experimenting were however not satysfing a
 \todo{describe ensembling - average, weighted average, stacking using logreg}
 
 \subsubsection*{Conflicting Evidence/Cherrypicking Detection}
+\todo{Binary deberta with custom loss function - weighted crossentropy loss}
 \todo{Bryce's idea - tf-idf + randomforests?, future works-new paper (not exactly what we are doing now, but interesting)~\cite{jaradat2024contextawaredetectioncherrypickingnews}}
 
 
