@@ -30,6 +30,7 @@ Moreover, we think the model should be trained only on three labels because only
 The results of our preliminary experiment were not satisfactory, and we decided to try more radically different approaches, as described in the following sections.
 
 \subsubsection*{Concatenation and Four Classes Classificator}
+\label{subsubsec:concatenation}
 \todo{better name}
 \todo{describe, models, Concatenation, sep-concatenation, random order, four classes!, Mistral, DeBERTaV3, metion Transformers-HF}
 Our first approach is to finetune a text classification model on all four classes directly. However, this means that as evidence, we must feed the model with all question-answer pairs at once to classify \textit{Conflicting Evidence/Cherrypicking} correctly. For that, we tried several options. First, we concatenated all of them using single blank space in the order they are provided in the dataset. This should work because we expect that annotators created the question-answer pairs usually in a specific order. The second option we tried is concatenation using a separator \texttt{[SEP]} token again in the original order. This option utilizes the model's knowledge about separator tokens and allows it to know exact question-answer borders. The last option we tried is to randomly select more orders of the question-answer pairs (all combinations computation is not feasible - up to $10!$ of combinations).
@@ -41,7 +42,7 @@ From the approaches described above, we achieved the best results with the origi
 \subsubsection*{LLM Classifiers}
 \todo{describe - likert motivation, GPT4o, Claude 3?}
 \todo{try "opensource" LLMs? - maybe own section in an Appendix?}
-To utilize the chain-of-thoughts abilities of large language models (LLMs), such as GPT4o~\cite{openai2024gpt4o} or Claude 3.5 Sonnet~\cite{anthropic2024claude35sonnet}, we tried to use them also for the classification task. Because we wanted to be able to perform ensembling (see section~\ref{subsubsec:ensembling}), we needed to output class probabilities. However, the LLMs, as mentioned above, are not good in numbers and math\todo{citation}. We use the Likert scale as a proxy for the class probabilities. The Likert scale was the standard one, and the model was asked (see system prompt in Appendix~\ref{appendix_sec:llms}) to provide the Likert scale rating for each class. During postprocessing, we then transformed those to number scores\footnote{strongly disagree: -2, disagree: -1, neutral: 0, agree: 1, strongly agree: 2} and then we used the softmax function to get the wanted class probabilities.
+To utilize the chain-of-thoughts abilities of large language models (LLMs), such as GPT4o~\cite{openai2024gpt4o} or Claude 3.5 Sonnet~\cite{anthropic2024claude35sonnet}, we tried to use them also for the classification task. Because we wanted to be able to perform ensembling (see section~\ref{subsubsec:ensembling}), we needed to output class probabilities. However, for the LLMs the math and numbers poses still a challenge~\cite{ahn-etal-2024-large}. To compensate the weaker mathematical reasoning abilities, we use the Likert scale as a proxy for the class probabilities. The Likert scale was the standard one, and the model was asked (see system prompt in Appendix~\ref{appendix_sec:llms}) to provide the Likert scale rating for each class. During postprocessing, we then transformed those to number scores\footnote{strongly disagree: -2, disagree: -1, neutral: 0, agree: 1, strongly agree: 2} and then we used the softmax function to get the wanted class probabilities.
 
 \todo{check}
 We know that our approach uses closed-source models; however, we could not utilize the open-source models due to limited time. Because we want to support the usage of open-source models, we provide the evaluation on open-source (or at least open-weights) models such as Llama 3.1~\cite{meta2024llama31}, Command~R~\cite{cohere2024commandr} in the Appendix~\ref{appendix_sec:opensource_llms}.
@@ -59,6 +60,12 @@ The last method we tried was stacking using logistic regression. However, this s
 \subsubsection*{Conflicting Evidence/Cherrypicking Detection}
 \todo{Binary deberta with custom loss function - weighted crossentropy loss}
 \todo{Bryce's idea - tf-idf + randomforests?, future works-new paper (not exactly what we are doing now, but interesting)~\cite{jaradat2024contextawaredetectioncherrypickingnews}}
+
+During the experiments, we discovered that classifying the \textit{Conflicting Evidence/Cherrypicking} class is the most challenging task. To overcome this problem, we tried to build a binary classifier that would output one if the input claim is cherrypicked and 0 otherwise. First, we tried to use the DeBERTaV3 Large model with basic cross-entropy loss (other experimental settings were the same as in section~\ref{subsubsec:concatenation}). However, due to a high imbalance in the dataset, the model was not able to learn the classification task. To tackle this issue, we came up with a custom weighted cross-entropy loss function that would penalize the model more for misclassifying the \textit{Conflicting Evidence/Cherrypicking} class\footnote{The used weights corresponds to the ratio of classes in the training dataset: [0.3, 5]}. This approach improved slightly the performance, but it was still not usable in our pipeline.
+
+Another approach we tried due to the lack of large training sets for cherrypicking was using a simple tf-idf representation of just the input claim and then using a random forest classifier~\footnote{In both cases, we used implementation from the Scikit-learn library~\cite{scikit-learn}}. However, this approach still did not provide satisfactory results.
+
+While writing this system description paper, we found an interesting research by~\citet{jaradat2024contextawaredetectioncherrypickingnews} that uses a radically different approach to detect cherrypicking in newspaper articles.
 
 
 \subsection{Classification Evaluation}
