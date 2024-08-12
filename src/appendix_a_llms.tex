@@ -6,16 +6,34 @@
 In this section we closely describe the exact usage of the LLMs.
 \todo{write}
 
+
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize\linespread{0.9}, % Smaller font with less spacing
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{orange},
+    numberstyle=\tiny\color{gray},
+    numbers=left, % Line numbers on the left
+    stepnumber=1, % Line numbers for every line
+    numbersep=5pt, % Space between line numbers and code
+    tabsize=4, % Size of tabs
+    showstringspaces=false, % Don't show spaces in strings
+    breaklines=true, % Line wrapping
+    breakatwhitespace=true,
+    frame=lines, % Add a frame around the code
+    captionpos=b, % Caption at the bottom
+}
+
 \begin{figure*}
     \begin{lstlisting}[breaklines=true, frame=single]
-You are a professional fact checker, formulate up to 10 questions that cover all the facts needed to validate whether the factual statement (in User message) is true, false, uncertain or a matter of opinion.\nAfter formulating Your questions and their answers using the provided sources, You evaluate the possible veracity verdicts (Supported claim, Refuted claim, Not enough evidence, or Conflicting evidence/Cherrypicking) given your claim and evidence on a Likert scale (1 - Strongly disagree, 2 - Disagree, 3 - Neutral, 4 - Agree, 5 - Strongly agree).\nThe facts must be coming from these sources, please refer them using assigned IDs:"
+"You are a professional fact checker, formulate up to 10 questions that cover all the facts needed to validate whether the factual statement (in User message) is true, false, uncertain or a matter of opinion.\nAfter formulating Your questions and their answers using the provided sources, You evaluate the possible veracity verdicts (Supported claim, Refuted claim, Not enough evidence, or Conflicting evidence/Cherrypicking) given your claim and evidence on a Likert scale (1 - Strongly disagree, 2 - Disagree, 3 - Neutral, 4 - Agree, 5 - Strongly agree).\nThe facts must be coming from these sources, please refer them using assigned IDs:"
 ---
-## Source ID: 1 [url]"
+## Source ID: 1 [url]
     [context before][page content][context after]
 ...
 ---
-## Output formatting
-Please, you MUST only print the output in the following output format:
+## Output formatting\nPlease, you MUST only print the output in the following output format:
 ```json
 {
     "questions":
