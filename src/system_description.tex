@@ -3,3 +3,26 @@
 \section{System Description}
 \label{sec:system}
 \todo{write}
+Our syste
+
+\subsection{Retrieval Module}
+Mixedbread~\cite{li-li-2024-aoe,emb2024mxbai}, Faiss~\cite{douze2024faiss,johnson2019billion}
+
+\subsubsection{Chunking}
+Our initial experiments with the whole AVerITeC documents for the Document Retrieval step have revealed a significant weakness -- while the median document length (about 2000 characters) fits the input size of our embedding model with a generous margin, there is often a small number of documents with \textit{hundreds of thousands}§ characters, exceeding the 1024 input tokens with little to no coverage.
+
+Upon further examination, these have more often than not, been PDF documents of legislature, documentation and transcription -- highly relevant sources real fact-checker would scroll through to find the relevant part to refer. 
+
+This workflow has inspired our next approach -- to facilitate the retrieval of smaller articles as a whole and 
+
+\subsubsection{Looking for diversity}
+While the original~\cite{averitec2024} baseline retrieved articles based on different queries to promote variety among search result, our approach leverages the whole scope of given claim, without trying to divide its information, producing noise along the way.
+
+To counterweight the relevancy-driven similarity search in the neighbourhood of a single \textit{query} embedding and its vulnerability to redundancy among search results, we employ the well-known method of Maximal Marginal Relevance~\cite{}
+
+
+\subsection{Evidence Generation}
+Rather than sampling evidence from retrieved text or QG+QA pipeline ran on the retrieved sentences, we argue that the modern LLMs offer the use of wider context, such as whole news articles.
+
+
+
