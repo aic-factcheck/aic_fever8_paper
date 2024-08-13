@@ -1,15 +1,32 @@
 %!TEX ROOT=../emnlp2023.tex
 
-\section{Classification Step}
+\subsection{Classification Step}
 In this section, we describe the classification component of our pipeline. First, we introduce chronologically the different approaches, the ensembles we tried, and their pros and cons. Then, we present evaluation results across different methods and various metrics. The goal of this step is to take the input claim and questions with answers provided by previous stages \todo{ref} and classify the claim into one of the four classes: \textit{Supported}, \textit{Refuted}, \textit{Not Enough Evidence}, or \textit{Conflicting Evidence/Cherrypicking} as defined by~\citealp{averitec2024}.
 
-\subsection{Approaches}
+\subsubsection{Approaches}
 \todo{Describe what was done +  why}
 
 In the earliest stages of experimenting, we utilized the classifier from baseline provided by authors\footnote{https://huggingface.co/chenxwh/AVeriTeC}~\cite{averitec2024}. This classifier is based on the BERT~\cite{devlin-etal-2019-bert} model and was further fine-tuned on the AVeriTeC dataset~\cite{averitec2024}. It takes one claim and one question with its answer as input. The output of this encoder model (class logits) is then further processed by several if-clauses to determine the final label. To the best of our knowledge, the complete classifier outputs \textit{Not Enough Evidence} whenever the model predicts the \textit{Not Enough Evidence} or some 4th label (here, we are not sure how the model was precisely fine-tuned) for any of the (up to 10) question-answer pairs. It predicts \textit{Supported} if there is no \textit{Not Enough Evidence} prediction and at least one \textit{Supported} prediction and no \textit{Refuted} prediction. Then it predicts \textit{Refuted} if there are no \textit{Not Enough Evidence} or \textit{Supported} predictions and at least one \textit{Refuted} prediction. Otherwise, it predicts \textit{Conflicting Evidence/Cherrypicking}. Despite considerable effort, we could not understand why and how the model was trained on four labels and exact background of this, at least from our point of view, ad-hoc post-processing logic.
 
 We argue that the post-processing logic should be changed so that \textit{Not Enough Evidence} is predicted only if there is no other label to predict. We think that, for example, if among the predictions for question-answer pairs, there is one \textit{Not Enough Evidence} prediction and the rest are \textit{Supported} predictions, the final prediction should be \textit{Supported} and not \textit{Not Enough Evidence} as in the original logic. We did implement this change (see listing~\ref{lst:post-processing}), and surprisingly, it did not improve the results as the number of \textit{Not Enough Evidence} class has fallen significantly \todo{numbers}. Despite that, we still think this change is more logical and should be used in the future.
 
+\lstset{
+    language=Python,
+    basicstyle=\ttfamily\footnotesize\linespread{0.9}, % Smaller font with less spacing
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{orange},
+    numberstyle=\tiny\color{gray},
+    numbers=left, % Line numbers on the left
+    stepnumber=1, % Line numbers for every line
+    numbersep=5pt, % Space between line numbers and code
+    tabsize=4, % Size of tabs
+    showstringspaces=false, % Don't show spaces in strings
+    breaklines=true, % Line wrapping
+    breakatwhitespace=true,
+    frame=lines, % Add a frame around the code
+    captionpos=b, % Caption at the bottom
+}
 \begin{figure}
     \begin{lstlisting}[language=Python, frame=single]
 if has_true and has_false:
@@ -29,7 +46,7 @@ Moreover, we think the model should be trained only on three labels because only
 
 The results of our preliminary experiment were not satisfactory, and we decided to try more radically different approaches, as described in the following sections.
 
-\subsubsection*{Concatenation and Four Classes Classifier}
+\subsubsubsection*{Concatenation and Four Classes Classifier}
 \label{subsubsec:concatenation}
 \todo{better name}
 \todo{describe, models, Concatenation, sep-concatenation, random order, four classes!, Mistral, DeBERTaV3, metion Transformers-HF}
@@ -39,7 +56,7 @@ As models, we chose DeBERTaV3~\cite{he2023debertav3improvingdebertausing} in two
 
 From the approaches described above, we achieved the best results with the original order achieving 0.71 macro $F_1$ score. The separator model achieved a comparable 0.70 macro $F_1$ score, and the random order model performed worse with a 0.67 macro $F_1$ score. We provide our best DeBERTaV3 finetuned model publicly in a Huggingface repository\footnote{https://huggingface.co/ctu-aic/deberta-v3-large-AVeriTeC-nli}.
 
-\subsubsection*{LLM Classifiers}
+\subsubsubsection*{LLM Classifiers}
 \todo{describe - likert motivation, GPT4o, Claude 3?}
 \todo{try "opensource" LLMs? - maybe own section in an Appendix?}
 To utilize the chain-of-thoughts abilities of large language models (LLMs), such as GPT4o~\cite{openai2024gpt4o} or Claude 3.5 Sonnet~\cite{anthropic2024claude35sonnet}, we tried to use them also for the classification task. Because we wanted to be able to perform ensembling (see section~\ref{subsubsec:ensembling}), we needed to output class probabilities. However, for the LLMs the math and numbers poses still a challenge~\cite{ahn-etal-2024-large}. To compensate the weaker mathematical reasoning abilities, we use the Likert scale as a proxy for the class probabilities. The Likert scale was the standard one, and the model was asked (see system prompt in Appendix~\ref{appendix_sec:llms}) to provide the Likert scale rating for each class. During postprocessing, we then transformed those to number scores\footnote{strongly disagree: -2, disagree: -1, neutral: 0, agree: 1, strongly agree: 2} and then we used the softmax function to get the wanted class probabilities.
@@ -47,7 +64,7 @@ To utilize the chain-of-thoughts abilities of large language models (LLMs), such
 \todo{check}
 We know that our approach uses closed-source models; however, we could not utilize the open-source models due to limited time. Because we want to support the usage of open-source models, we provide the evaluation on open-source (or at least open-weights) models such as Llama 3.1~\cite{meta2024llama31}, Command~R~\cite{cohere2024commandr} in the Appendix~\ref{appendix_sec:opensource_llms}.
 
-\subsubsection*{Ensembling}
+\subsubsubsection*{Ensembling}
 \label{subsubsec:ensembling}
 \todo{describe ensembling - average, weighted average, stacking using logreg}
 
@@ -57,7 +74,7 @@ The second method is a logical extension of the first one, tuning the weights us
 
 The last method we tried was stacking using logistic regression. However, this setup classified no labels from \textit{Not Enough Evidence} and \textit{Conflicting Evidence/Cherrypicking}, and we could not achieve reasonable results. For logistic regression, we used the scikit-learn library~\cite{scikit-learn}.
 
-\subsubsection*{Conflicting Evidence/Cherrypicking Detection}
+\subsubsubsection*{Conflicting Evidence/Cherrypicking Detection}
 \todo{Binary deberta with custom loss function - weighted crossentropy loss}
 \todo{Bryce's idea - tf-idf + randomforests?, future works-new paper (not exactly what we are doing now, but interesting)~\cite{jaradat2024contextawaredetectioncherrypickingnews}}
 
@@ -68,7 +85,7 @@ Another approach we tried due to the lack of large training sets for cherrypicki
 While writing this system description paper, we found an interesting research by~\citet{jaradat2024contextawaredetectioncherrypickingnews} that uses a radically different approach to detect cherrypicking in newspaper articles.
 
 
-\subsection{Classification Evaluation}
+\subsubsection{Classification Evaluation}
 \todo{table with comparative results + comments}
 
 \input{figures/eval_table.tex}
