@@ -18,11 +18,21 @@ This workflow has inspired our next approach -- to facilitate the retrieval of s
 \subsubsection{Looking for diversity}
 While the original~\cite{averitec2024} baseline retrieved articles based on different queries to promote variety among search result, our approach leverages the whole scope of given claim, without trying to divide its information, producing noise along the way.
 
-To counterweight the relevancy-driven similarity search in the neighbourhood of a single \textit{query} embedding and its vulnerability to redundancy among search results, we employ the well-known method of Maximal Marginal Relevance~\cite{}
+To counterweight the relevancy-driven similarity search in the neighbourhood of a single \textit{query} embedding and its vulnerability to redundancy among search results, we perform reranking based on their Maximal Marginal Relevance (MMR)~\cite{carbonell-mmr}, a metric popular for the RAG task computed as
+$$\lambda \cdot \mathrm{Sim}(D_i, Q) - (1-\lambda) \cdot \max_{D_j \in S} \mathrm{Sim}(D_i, D_j)$$
 
+In our system, we set $\lambda=0.75$, $k=10$ and $k_{fetch} = 40$, already obtaining a result on par with a more complex system that would decompose the claim into subqueries and return results for each, using a fraction of its computational cost.
 
 \subsection{Evidence Generation}
 Rather than sampling evidence from retrieved text or QG+QA pipeline ran on the retrieved sentences, we argue that the modern LLMs offer the use of wider context, such as whole news articles.
+
+\subsubsection{\texttt{JSON} Generation}
+The current LLMs are trained very well for this, allows for very simple integration of LLM into pipeline
+
+\subsubsection{Chain-of-thoughts Prompting}
+While JSON dictionary should be order-invariant, we can actually exploit the order of outputs to make LLMS like GPT-4o output better results.
+
+\subsubsection{Few-shot learning}
 
 
 
