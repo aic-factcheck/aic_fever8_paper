@@ -46,7 +46,7 @@ Moreover, we think the model should be trained only on three labels because only
 
 The results of our preliminary experiment were not satisfactory, and we decided to try more radically different approaches, as described in the following sections.
 
-\subsubsubsection*{Concatenation and Four Classes Classifier}
+\subsubsection*{Concatenation and Four Classes Classifier}
 \label{subsubsec:concatenation}
 \todo{better name}
 \todo{describe, models, Concatenation, sep-concatenation, random order, four classes!, Mistral, DeBERTaV3, metion Transformers-HF}
@@ -56,7 +56,7 @@ As models, we chose DeBERTaV3~\cite{he2023debertav3improvingdebertausing} in two
 
 From the approaches described above, we achieved the best results with the original order achieving 0.71 macro $F_1$ score. The separator model achieved a comparable 0.70 macro $F_1$ score, and the random order model performed worse with a 0.67 macro $F_1$ score. We provide our best DeBERTaV3 finetuned model publicly in a Huggingface repository\footnote{https://huggingface.co/ctu-aic/deberta-v3-large-AVeriTeC-nli}.
 
-\subsubsubsection*{LLM Classifiers}
+\subsubsection*{LLM Classifiers}
 \todo{describe - likert motivation, GPT4o, Claude 3?}
 \todo{try "opensource" LLMs? - maybe own section in an Appendix?}
 To utilize the chain-of-thoughts abilities of large language models (LLMs), such as GPT4o~\cite{openai2024gpt4o} or Claude 3.5 Sonnet~\cite{anthropic2024claude35sonnet}, we tried to use them also for the classification task. Because we wanted to be able to perform ensembling (see section~\ref{subsubsec:ensembling}), we needed to output class probabilities. However, for the LLMs the math and numbers poses still a challenge~\cite{ahn-etal-2024-large}. To compensate the weaker mathematical reasoning abilities, we use the Likert scale as a proxy for the class probabilities. The Likert scale was the standard one, and the model was asked (see system prompt in Appendix~\ref{appendix_sec:llms}) to provide the Likert scale rating for each class. During postprocessing, we then transformed those to number scores\footnote{strongly disagree: -2, disagree: -1, neutral: 0, agree: 1, strongly agree: 2} and then we used the softmax function to get the wanted class probabilities.
@@ -64,7 +64,7 @@ To utilize the chain-of-thoughts abilities of large language models (LLMs), such
 \todo{check}
 We know that our approach uses closed-source models; however, we could not utilize the open-source models due to limited time. Because we want to support the usage of open-source models, we provide the evaluation on open-source (or at least open-weights) models such as Llama 3.1~\cite{meta2024llama31}, Command~R~\cite{cohere2024commandr} in the Appendix~\ref{appendix_sec:opensource_llms}.
 
-\subsubsubsection*{Ensembling}
+\subsubsection*{Ensembling}
 \label{subsubsec:ensembling}
 \todo{describe ensembling - average, weighted average, stacking using logreg}
 
@@ -74,7 +74,7 @@ The second method is a logical extension of the first one, tuning the weights us
 
 The last method we tried was stacking using logistic regression. However, this setup classified no labels from \textit{Not Enough Evidence} and \textit{Conflicting Evidence/Cherrypicking}, and we could not achieve reasonable results. For logistic regression, we used the scikit-learn library~\cite{scikit-learn}.
 
-\subsubsubsection*{Conflicting Evidence/Cherrypicking Detection}
+\subsubsection*{Conflicting Evidence/Cherrypicking Detection}
 \todo{Binary deberta with custom loss function - weighted crossentropy loss}
 \todo{Bryce's idea - tf-idf + randomforests?, future works-new paper (not exactly what we are doing now, but interesting)~\cite{jaradat2024contextawaredetectioncherrypickingnews}}
 
