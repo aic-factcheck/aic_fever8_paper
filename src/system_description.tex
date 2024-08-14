@@ -6,6 +6,12 @@
 Our syste
 
 \subsection{Retrieval Module}
+To ease comparison with the baseline and other systems designed for the task, our system does not use direct internet/search-engine access for its retrieval, but a \textit{knowledge store} provided separately alongside each claim.
+
+This knowledge store contains pre-scraped search results for various search queries that can be derived from each claim using human annotation or generative models.
+The knowledge stores used with ours as well as the baseline system can be downloaded from the Averitec dataset page\footnote{\url{https://fever.ai/dataset/averitec.html}}, containing about 1000 \textit{documents} per claim with median sentence count of 28 using the dev set.
+
+\subsubsection{Angle-optimized embedding search}
 Mixedbread~\cite{li-li-2024-aoe,emb2024mxbai}, Faiss~\cite{douze2024faiss,johnson2019billion}
 
 \subsubsection{Chunking}
