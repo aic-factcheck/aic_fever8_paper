@@ -70,4 +70,14 @@ While JSON dictionary should be order-invariant, we can actually exploit the ord
 \subsubsection{Few-shot learning}
 To further boost our system's evidence-generation capabilities, 
 
+\subsubsection{Likert-scale Label Confidence}
+Despite modern LLMs being well capable of predicting the label in a \say{pick one} fashion, in research application a probability distribution is a more desirable classification outcome for two reasons.
 
+Firstly, it helps to establish the confidence in each label and pinpoint the edge-cases, secondly, it allows ensembling the LLM classification with any other model, such as Encoders with classification head finetuned on the task of Natural Language Inference (NLI) (see section~\ref{subsubsec:ensembling}).
+
+As the LLMs and other token prediction schemes struggle with the prediction of continuous numbers as they are hard to tokenize appropriately~\cite{golkar2023xvalcontinuousnumberencoding}, we come up with a simple alternative: using zero-shot learning, model is prompted to print each of the 4 possible labels, along with its Likert-scale rating: 1 for \say{strongly disagree}, 2 for \say{disagree}, 3 for \say{neutral}, 4 for \say{agree} and 5 for \say{strongly agree}~\cite{likert1932technique}.
+
+Likert scale's popularity in psychology and other fields such as software testing~\cite{likertstudy} adds another benefit -- both the scale itself and its appropriate usage was likely demonstrated many times to the LLMs during their unsupervised training phase.
+
+To convert the ratings such as \texttt{\{\say{Supported}:2, \say{Refuted}:5, \say{Cherrypicking}:4, \say{NEE}:2\}} to a kind of probability distribution, we then use softmax~\cite{NIPS1989_0336dcba}.
+While the label probabilities are only emulated (and may only take a limited, discrete set of values) and the system may produce ties, it gets the job done until further research is carried out.
