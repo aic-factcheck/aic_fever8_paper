@@ -4,5 +4,15 @@
 \label{sec:results}
 \todo{write}
 
+\subsection{API Costs}
+During our experimentation July 2024, we have made around 9000 requests to OpenAI's \texttt{gpt-4o-2024-05-13} batch API, at a total cost of \$363.
+This gives a mean cost estimate of \$0.04 per a single fact-check (or \$0.08 using the API without the batch discount) that can be further reduced using cheaper models, such as \texttt{gpt-4o-2024-08-06}.
+
+We argue that such costs make our model suitable for further experiments alongside human fact-checkers whose time spent reading through each source and proposing each evidence by themselves would certainly come at a higher price.
+
+Our successive experiments with LLaMa 3.1~\cite{meta2024llama31} show promising results as well, nearly achieving parity with GPT.
+The use of open-source models such as LLaMa or Mistral allows running our pipeline on premise, without leaking data to a third party and billing anything else than the computational resources.
+For further experiments, we are looking to integrate them into the attached Python library using VLLM~\cite{vllm}.
+
 \subsection{Error analysis}
 All of the classifiers and pipelines we have set up for our task have exposed a significant dip in $F_1$ label score for the \texttt{Not Enough Evidence} and \texttt{Conflicting Evidence/Cherrypicking} labels

@@ -23,12 +23,13 @@ This yields a reasonably-sized document store for embedding into a vectorstore, 
 This allows a quick and agile production of vectorstores for further querying and experimentation, motivated by the Averitec test data only being published just several days before the announced submission deadline while also keeping the resource intensity moderate for real-world applications -- if time is not of the essence, the step can be omitted.
 
 \subsubsection{Looking for diversity}
-While the original~\cite{averitec2024} baseline retrieved articles based on different queries to promote variety among search result, our approach leverages the whole scope of given claim, without trying to divide its information, producing noise along the way.
+While the original~\cite{averitec2024} baseline retrieved articles based on different queries to promote variety among search results, our approach omits the division of a claim to a set of different queries.
+We aim to use an embedding-driven similarity search in the neighbourhood of the whole original claim not to leave any piece of information behind or introduce noise in yet another generative task along the pipeline.
 
-To counterweight the relevancy-driven similarity search in the neighbourhood of a single \textit{query} embedding and its vulnerability to redundancy among search results, we perform reranking based on their Maximal Marginal Relevance (MMR)~\cite{carbonell-mmr}, a metric popular for the RAG task computed as
+Our solution is, however, prone to redundancy among search results, which we address using a reranking by the results' Maximal Marginal Relevance (MMR)~\cite{carbonell-mmr}, a metric popular for the RAG task computed as
 $$\lambda \cdot \mathrm{Sim}(D_i, Q) - (1-\lambda) \cdot \max_{D_j \in S} \mathrm{Sim}(D_i, D_j)$$
 
-In our system, we set $\lambda=0.75$, $k=10$ and $k_{fetch} = 40$, already obtaining a result on par with a more complex system that would decompose the claim into subqueries and return results for each, using a fraction of its computational cost.
+In our system, we set $\lambda=0.75$ to favour relevancy rather than diversity, $k=10$ and $k_{fetch} = 40$, obtaining a set of diverse sources relevant to each claim at a fraction of cost and complexity of a query-generation driven retrieval, such as that used in~\cite{averitec2024}.
 
 \subsection{Evidence Generation}
 Rather than sampling evidence from retrieved text or QG+QA pipeline ran on the retrieved sentences, we argue that the modern LLMs offer the use of wider context, such as whole news articles.
