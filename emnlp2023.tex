@@ -38,7 +38,9 @@
 \usepackage{{booktabs}}
 % Commands
 \newcommand{\todo}[1]{{\color{red}\colorbox{yellow}{\textbf{TODO: }}#1}}
-
+\makeatletter
+\newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
+\makeatother
 
 % If the title and author information does not fit in the area allocated, uncomment the following
 %
@@ -46,7 +48,7 @@
 %
 % and set <dim> to something 5cm or larger.
 
-\title{AIC CTU system at AVerITec: Re-thinking automated fact-checking as a simple RAG task}
+\title{AIC CTU system at AVerITec: Re-framing automated fact-checking as a simple RAG task}
 
 % Author information can be set in various styles:
 % For several authors from the same institution:
