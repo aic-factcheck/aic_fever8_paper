@@ -9,11 +9,18 @@ Our syste
 Mixedbread~\cite{li-li-2024-aoe,emb2024mxbai}, Faiss~\cite{douze2024faiss,johnson2019billion}
 
 \subsubsection{Chunking}
-Our initial experiments with the whole AVerITeC documents for the Document Retrieval step have revealed a significant weakness -- while the median document length (about 2000 characters) fits the input size of our embedding model with a generous margin, there is often a small number of documents with \textit{hundreds of thousands}§ characters, exceeding the 1024 input tokens with little to no coverage.
+Our initial experiments with the whole AVerITeC documents for the Document Retrieval step have revealed a significant weakness -- while the median document length (about 2000 characters) fits the input size of our embedding model with a generous margin, there is often a small number of documents with \textit{hundreds of thousands} characters, exceeding the 1024 input tokens with little to no coverage.
 
 Upon further examination, these have more often than not, been PDF documents of legislature, documentation and transcription -- highly relevant sources real fact-checker would scroll through to find the relevant part to refer. 
 
 This workflow has inspired our next approach -- to facilitate the retrieval of smaller articles as a whole and 
+
+\subsubsection{Chunk Preselection}
+While the chunking of long articles prevents information from larger documents from being lost, it makes the domain for embedding search too large.
+As every claim has its own retrieval domain of tens of thousands of chunks, we seek to omit the chunks having little to no common tokens with our claim using a BM25 search for the nearest $k$ chunks, setting the $k$ to 6000 for dev and 2000 for test claims. 
+This yields a reasonably-sized document store for embedding into a vectorstore, taking about 40s to compute and store within FAISS~\cite{douze2024faiss} for each test-claim using our Tesla V100 GPU.
+
+This allows a quick and agile production of vectorstores for further querying and experimentation, motivated by the Averitec test data only being published just several days before the announced submission deadline while also keeping the resource intensity moderate for real-world applications -- if time is not of the essence, the step can be omitted.
 
 \subsubsection{Looking for diversity}
 While the original~\cite{averitec2024} baseline retrieved articles based on different queries to promote variety among search result, our approach leverages the whole scope of given claim, without trying to divide its information, producing noise along the way.
