@@ -18,6 +18,6 @@
         Llama 3.1 & 0.73 & 0.44 & 0.43 & 0.46 \\
         \bottomrule
     \end{tabular} 
-    \caption{Evalution of the classifiers on the development set. $F_1$, Precision and Recall are computed as macro-averages. The random@10 suffix indicates that the classifier run with 10 different random orders of question-answer pairs. GPT4o stands for the Likert classifier based on GPT-4o, Claude 3.5 Sonnet is the Likert classifier based on Claude 3.5 Sonnet, and DeBERTa is classifier based on DeBERTaV3 Large fine-tuned on NLI first, and then on the \averitec{}  train set for label inference.}
+    \caption{Evalution of the classifiers on the development set. $F_1$, Precision and Recall are computed as macro-averages. The random@10 suffix indicates that the classifier run with 10 different random orders of question-answer pairs. GPT4o stands for the Likert classifier based on GPT-4o, Claude 3.5 Sonnet is the Likert classifier based on Claude 3.5 Sonnet, and DeBERTa is classifier based on DeBERTaV3 Large fine-tuned on \averitec{} gold evidence and labels.}
     \label{tab:nli}
 \end{table*}

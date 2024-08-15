@@ -62,12 +62,12 @@ Rather than sampling evidence from retrieved text or QG+QA pipeline ran on the r
 \subsubsection{JSON Generation}
 The current LLMs are trained very well for this, allows for very simple integration of LLM into pipeline
 
+\subsubsection{Chain-of-thought Prompting}
+While JSON dictionary should be order-invariant, we can actually exploit the order of outputs to make LLMS like GPT-4o output better results.~\cite{cot}
+
 \subsubsection{Source Referring}
 We assign a 1-based index to each of the sourced chunks and prompt the LLM to refer it as the source ID with each evidence it generates.
 This has been shown quite reliable in \todo{literature}.
-
-\subsubsection{Chain-of-thought Prompting}
-While JSON dictionary should be order-invariant, we can actually exploit the order of outputs to make LLMS like GPT-4o output better results.~\cite{cot}
 
 \subsubsection{Few-shot learning}
 Few-shot learning by giving examples within prompt has been shown to boost performance in generative task already since GPT-3~\cite{fewshot}.
