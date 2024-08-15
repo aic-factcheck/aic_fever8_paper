@@ -39,6 +39,11 @@
 \usepackage{{booktabs}}
 % Commands
 \newcommand{\todo}[1]{{\color{red}\colorbox{yellow}{\textbf{TODO: }}#1}}
+\newcommand{\averitec}{AVeriTeC}
+\newcommand{\supp}{Supported}
+\newcommand{\reff}{Refuted}
+\newcommand{\nei}{Not enough evidence}
+\newcommand{\conf}{Conflicting evidence/Cherrypicking}
 \makeatletter
 \newcommand\footnoteref[1]{\protected@xdef\@thefnmark{\ref{#1}}\@footnotemark}
 \makeatother
@@ -49,7 +54,7 @@
 %
 % and set <dim> to something 5cm or larger.
 
-\title{AIC CTU system at AVerITec: Re-framing automated fact-checking as a simple RAG task}
+\title{AIC CTU system at \averitec{}: Re-framing automated fact-checking as a simple RAG task}
 
 % Author information can be set in various styles:
 % For several authors from the same institution:
@@ -105,7 +110,7 @@ Prague, Czech Republic\\
 \todo{Je to testovany jen v EN, neni to skutecny factchecker ale jen poc studie jeho proveditelnosti a kvantifikace toho jak moc to uz dnes jde 2. diskriminuje to pristupem k velkymu compute, bud posles velky firme data nebo nakoupis drahy compute. 3. ma to uhlikovou stopu jak traktor. Neprosli jsme ta data.}
 
 \section*{Ethics Statement}
-\todo{tohle bude potreba: 1. neni to skutecny plugnplay factchecker, ale studie jeho budouci proveditelnosti 2. tim ze to bylo tuneny na uspech nad averitec sadou tak to odrazi zaujeti jeho anotatoru (todo citace).}
+\todo{tohle bude potreba: 1. neni to skutecny plugnplay factchecker, ale studie jeho budouci proveditelnosti 2. tim ze to bylo tuneny na uspech nad \averitec{}  sadou tak to odrazi zaujeti jeho anotatoru (todo citace).}
 
 \section*{Acknowledgements}
 We would like to thank Bryce Aaron from UNC for exploring the problems of search query generation and pinpointing claims of rare labels that did not make it into our final pipeline but gave us a frame for comparison. 
