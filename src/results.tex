@@ -20,10 +20,11 @@ For further experiments, we are looking to integrate them into the attached Pyth
 In this section we provide results of an explorative analysis of 20 randomly selected samples from the development set. We divide our analysis into three parts: pipeline strenghts and errors, and dataset errors which we came across during our reviewing of the samples.
 
 \subsubsection*{Strenghts}
-\todo{}
+\todo{podle mě pěkné otázky, zdá se že dodržuje zadané zdroje a nebere informace ze sebe}
 \subsubsection*{Pipeline Errors}
-\todo{používání neoficiálních zdrojů ("gov" chyba), otázky navíc (udělali jsme 10) }
+\todo{používání více neoficiálních zdrojů ("gov" chyba) než anotátoři - u nás více noviny s volnějším stylem vs gov s tabulkami apod, otázky navíc (udělali jsme 10), extractive answers error (ale ne vždy -> future works), ?často čerpá hodněkrát z jednoho zdroje?, nevyužití claim date, neschopnost analýzy tabulek? }
 \subsubsection*{Dataset Errors}
+\todo{politifact leakage (leads even to error when our pipeline gives support instead of NEE), občas divné otázky (obecné, outside knowledge etc.), různě dlouhé otázky/odpovědi u různých datapoint (nekonzistence + zbytečné informace v odpovědích -> snižují skóre)}
 
 \todo{what with this?}
 All of the classifiers and pipelines we have set up for our task have exposed a significant dip in $F_1$ label score for the \texttt{Not Enough Evidence} and \texttt{Conflicting Evidence/Cherrypicking} labels.
