@@ -25,15 +25,16 @@ Our retrieval module then focuses on picking a set of $k$ ($k=10$ in the example
 \todo{možná posunout před chunking}
 Mixedbread~\cite{li-li-2024-aoe,emb2024mxbai}, Faiss~\cite{douze2024faiss,johnson2019billion}
 
-\subsubsection{Chunking}
-Our initial experiments with the whole \averitec{}  documents for the Document Retrieval step have revealed a significant weakness -- while the median document length (about 2000 characters) often fits the input size of the embedding model we use for semantical search (see Section~\ref{sec:knn}), outliers are common, with \textit{hundreds of thousands} characters, exceeding the 512 input tokens with little to no coverage of their content.
+\subsubsection{Chunking with added context}
+Our initial experiments with the whole \averitec{}  documents for the Document Retrieval step have revealed a significant weakness -- while most documents fit the input size of the embedding model we use for semantical search (see Section~\ref{sec:knn}), outliers are common, with \textit{hundreds of thousands} characters, exceeding the 512 input tokens with little to no coverage of their content.
 
 Upon further examination, these have more often than not, been PDF documents of legislature, documentation and communication transcription -- highly relevant sources real fact-checker would scroll through to find the relevant part to refer. 
 
-This workflow resembles the traditional chunk retrieval~\todo{cite} typical for RAG which we use in the following fashion: each document is partitioned into sets of sentences of combined length of $n$ characters at most.
-To take advantage of the full input size of the vector embedding model we use for semantical search, we set our bound $n=512*4=2048$, 512 being the input dimension of common embedding models, 4 being a typical number of characters per token for US English in modern tokenizers. \todo{zdroj?}
+This workflow resembles the chunk retrieval as used in~\cite{rag}, popularized for use with RAG.
+We partition each document into sets of sentences of combined length of $n$ characters at most.
+To take advantage of the full input size of the vector embedding model we use for semantical search, we set our bound $n=512*4=2048$, 512 being the input dimension of common embedding models, 4 often being used as a rule-of-thumb number of characters per token for US English in modern tokenizers~\cite{tokens}.
 
-Each chunk is assigned metadata -- the source URL, as well as the full text of the next and previous chunk within the same document.
+Importantly, each chunk is  assigned metadata -- the source URL, as well as the full text of the next and previous chunk within the same document.
 This way, chunks can be presented to the LLM along with their original context in the generation module, where the length constraint is much less of an issue than in vector embedding.
 
 \subsubsection{Pruning the chunks}
@@ -50,7 +51,7 @@ We aim to use an embedding-driven similarity search in the neighbourhood of the 
 
 Our solution is, however, prone to redundancy among search results, which we address using a reranking by the results' Maximal Marginal Relevance (MMR)~\cite{carbonell-mmr}, a metric popular for the RAG task, which maximites the search results' score computed as (for $D_i\in P$)
 $$\lambda \cdot \mathrm{Sim}(D_i, Q) - (1-\lambda) \cdot \max_{D_j \in S} \mathrm{Sim}(D_i, D_j)$$
-$Sim$ denoting the cosine-similarity between embeddings, $Q$ being the search query, and $P$ the pre-fetched set of documents (by a search which simply maximizes their $Sim$ to $Q$), $S$ being the final search result.
+$Sim$ denoting the cosine-similarity between embeddings, $Q$ being the search query, and $P$ the pre-fetched set of documents (by a search which simply maximizes their $Sim$ to $Q$), forming $S$ as the final search result, by adding each $D_i$ as MMR-argmax one by one, until reaching its desired size.
 
 In our system, we set $\lambda=0.75$ to favour relevancy rather than diversity, $|S|=10$ and $|P| = 40$, obtaining a set of diverse sources relevant to each claim at a fraction of cost and complexity of a query-generation driven retrieval, such as that used in~\cite{averitec2024}.
 
@@ -58,17 +59,18 @@ In our system, we set $\lambda=0.75$ to favour relevancy rather than diversity, 
 \label{sec:generation}
 Rather than sampling evidence from retrieved text or QG+QA pipeline ran on the retrieved sentences, we argue that the modern LLMs offer the use of wider context, such as whole news articles.
 
-\subsubsection{\texttt{JSON} Generation}
+\subsubsection{JSON Generation}
 The current LLMs are trained very well for this, allows for very simple integration of LLM into pipeline
 
 \subsubsection{Source Referring}
 We assign a 1-based index to each of the sourced chunks and prompt the LLM to refer it as the source ID with each evidence it generates.
 This has been shown quite reliable in \todo{literature}.
 
-\subsubsection{Chain-of-thoughts Prompting}
-While JSON dictionary should be order-invariant, we can actually exploit the order of outputs to make LLMS like GPT-4o output better results.
+\subsubsection{Chain-of-thought Prompting}
+While JSON dictionary should be order-invariant, we can actually exploit the order of outputs to make LLMS like GPT-4o output better results.~\cite{cot}
 
 \subsubsection{Few-shot learning}
+Few-shot learning by giving examples within prompt has been shown to boost performance in generative task already since GPT-3~\cite{fewshot}.
 To further boost our system's evidence-generation capabilities, 
 
 \subsubsection{Likert-scale Label Confidence}
@@ -77,7 +79,7 @@ Despite modern LLMs being well capable of predicting the label in a \say{pick on
 
 Firstly, it measures the confidence in each label, pinpointing the edge-cases, secondly, it allows ensembling the LLM classification with any other model, such as Encoders with classification head finetuned on the task of Natural Language Inference (NLI) (see section~\ref{subsubsec:ensembling}).
 
-As the LLMs and other token prediction schemes struggle with the prediction of continuous numbers which are notoriously hard to tokenize appropriately~\cite{golkar2023xvalcontinuousnumberencoding}, we come up with a simple alternative: using zero-shot learning, model is prompted to print each of the 4 possible labels, along with its Likert-scale rating: 1 for \say{strongly disagree}, 2 for \say{disagree}, 3 for \say{neutral}, 4 for \say{agree} and 5 for \say{strongly agree}~\cite{likert1932technique}.
+As the LLMs and other token prediction schemes struggle with the prediction of continuous numbers which are notoriously hard to tokenize appropriately~\cite{golkar2023xvalcontinuousnumberencoding}, we come up with a simple alternative: using zero-shot learning, model is prompted to print each of the 4 possible labels, along with their Likert-scale rating: 1 for \say{strongly disagree}, 2 for \say{disagree}, 3 for \say{neutral}, 4 for \say{agree} and 5 for \say{strongly agree}~\cite{likert1932technique}.
 
 On top of the ease of tokenization, Likert scale's popularity in psychology and other fields such as software testing~\cite{likertstudy} adds another benefit -- both the scale itself and its appropriate usage was likely demonstrated many times to LLMs during their unsupervised training phase.
 
