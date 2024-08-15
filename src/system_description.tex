@@ -10,8 +10,6 @@ This chapter describes our pipeline and the decisions taken at each module, achi
 \subsection{Retrieval Module}
 To ease comparison with the baseline and other systems designed for the task, our system does not use direct internet/search-engine access for its retrieval, but a \textit{knowledge store} provided separately alongside each claim.
 
-\todo{vypichnout že místo sentencí co používají v baseline my preferujeme chunky, které jsou mnohem lepší semanticka jednotka -- podpořit zdroji z původního feveru}
-
 \subsubsection{Knowledge Stores}
 Each claim's knowledge store contains pre-scraped search results for various queries that can be derived from the claim using human annotation or generative models.
 The knowledge stores used with ours as well as the baseline system can be downloaded from the \averitec{}  dataset page\footnote{\url{https://fever.ai/dataset/averitec.html}}, containing about 1000 pre-scraped \textit{documents}\footnote{\label{devsetnote} The numbers are orientational and were computed on knowledge stores provided for the \averitec{}  dev set.}, each consisting of $28$ sentences at median\footnoteref{devsetnote}, albeit varying wildly between documents.
@@ -36,10 +34,12 @@ To take advantage of the full input size of the vector embedding model we use fo
 
 Importantly, each chunk is  assigned metadata -- the source URL, as well as the full text of the next and previous chunk within the same document.
 This way, chunks can be presented to the LLM along with their original context in the generation module, where the length constraint is much less of an issue than in vector embedding.
+As shown in~\cite{drchal2023pipelinedatasetgenerationautomated}, fact-checking models benefit from being exposed to larger pieces of text such as paragraphs or entire documents rather than out-of-context sentences.
+Splitting our data into the maximum chunks that fit our retrieval model and providing them with additional context may help down the line, preventing the RAG sources from being semantically incomplete.
 
 \subsubsection{Pruning the chunks}
-While the chunking of long articles prevents information from larger documents from being lost, it makes the search domain too large to embed.
-As each of the thousands of claims has its own retrieval domain of possibly tens of thousands of chunks, we seek to omit the chunks having little to no common tokens with our claim using an efficient BM25~\cite{bm25} search for the nearest $k$ chunks, setting the $k$ to 6000 for dev and 2000 for test claims. 
+While the chunking of long articles prevents their information from getting lost to retriever, it makes its search domain too large to embed on demand.
+As each of the thousands of claims has its own knowledge store, each of possibly tens of thousands of chunks, we seek to omit the chunks having little to no common tokens with our claim using an efficient BM25~\cite{bm25} search for the nearest $k$ chunks, setting the $k$ to 6000 for dev and 2000 for test claims. 
 This yields a reasonably-sized document store for embedding each chunk into a vector, taking an average of 40s to compute and store using the method described in Section~\ref{sec:knn} for each test-claim using our Tesla V100 GPU.
 
 This allows a quick and agile production of vectorstores for further querying and experimentation, motivated by the \averitec{}  test data being published just several days before the announced submission deadline.
