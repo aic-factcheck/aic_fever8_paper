@@ -6,6 +6,7 @@ Our system is designed to be simple and its core could be described as simply a 
 Despite that, this section describes and justifies our decisions taken at each step, our additions to the naive version of RAG modules to tune them for the specific task of fact-checking, and their impact on the system performance.
 
 \subsection{Retrieval Module}
+\label{retrieval}
 To ease comparison with the baseline and other systems designed for the task, our system does not use direct internet/search-engine access for its retrieval, but an \averitec{} \textit{knowledge store} provided alongside each claim.
 
 To use our pipeline in the wild, our retrieval module is decoupled from the rest of the pipeline and can be swapped out in favour of an internet search module such as SerpApi as a whole, or it can be used on top of a knowledge store emulated using search API or a cheap on-premise search over large crawled corpora such as CommonCrawl.

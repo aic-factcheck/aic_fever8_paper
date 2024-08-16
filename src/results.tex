@@ -2,9 +2,15 @@
 
 \section{Results and analysis}
 \label{sec:results}
-\todo{write}
 
-\include{figures/pipeline_table.tex}
+We examine our pipeline results using two sets of metrics -- firstly, using the classification accuracy metrics over predicted labels without any ablation, that is obtaining the predicted labels using the predicted evidence generated on top the predicted retrieval results. While the retrieval module is fixed throughout this experiment (a full scheme described in section~\ref{retrieval}), various Evidence \& Label generators and classifiers are listed in Table~\ref{tab:nli} to give comparison on their performance on the same sources.
+\begin{table}[H]
+    \input{figures/eval_table.tex}
+\end{table}
+
+\begin{table*}[h]
+    \input{figures/pipeline_table.tex}
+\end{table*}
 
 \subsection{API Costs}
 During our experimentation July 2024, we have made around 9000 requests to OpenAI's \texttt{gpt-4o-2024-05-13} batch API, at a total cost of \$363.
