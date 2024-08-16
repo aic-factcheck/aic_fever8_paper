@@ -6,9 +6,6 @@
 In this section we closely describe the exact usage of the LLMs.
 \todo{write}
 
-\subsection{Dynamic Few-shot Learning}
-To utilise the few-shot learning framework, we decided to inspire from the baseline system~\cite{averitec2024} and provide the LLMs with a system prompt containing some examples of what we expect the model to do. Our evidence generation component loads the training data, tokenises them using the NLTK word tokenizer~\cite{bird-loper-2004-nltk} and indexes the claims using BM25 Okapi retriever. When the system prompt for our claim was created, we used the previously indexed retriever and searched for the ten most similar claims from the training data. Then, we used these claims' gold questions and answers as the few-shot learning examples. Figure~\ref{lst:llm_system_prompt} shows an example of the system prompt.
-
 
 \subsection{System Prompt}
 

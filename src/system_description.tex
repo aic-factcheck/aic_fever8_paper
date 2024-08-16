@@ -8,9 +8,9 @@ It is a variant of Retrieval-augmented Generation (RAG) scheme~\cite{rag}, makin
 This chapter describes our pipeline and the decisions taken at each module, achieving a simple yet efficient RAG scheme that improves dramatically across the board over the baseline system from~\cite{averitec2024}, and scores third in the \averitec{}  leaderboard as of August 2024.
 
 \subsection{Retrieval Module}
-To ease comparison with the baseline and other systems designed for the task, our system does not use direct internet/search-engine access for its retrieval, but an \averitec{} \textit{knowledge store} provided separately alongside each claim.
+To ease comparison with the baseline and other systems designed for the task, our system does not use direct internet/search-engine access for its retrieval, but an \averitec{} \textit{knowledge store} provided alongside each claim.
 
-To use our pipeline in the wild, our retrieval module is decoupled from the rest of the pipeline and can be swapped out in favour of an internet search API such as SerpApi as a whole, or it can be used with knowledge store emulated using search API or a cheap on-premise search over large crawled corpora such as CommonCrawl.
+To use our pipeline in the wild, our retrieval module is decoupled from the rest of the pipeline and can be swapped out in favour of an internet search module such as SerpApi as a whole, or it can be used on top of a knowledge store emulated using search API or a cheap on-premise search over large crawled corpora such as CommonCrawl.
 
 \subsubsection{Knowledge Stores}
 Each claim's knowledge store contains pre-scraped results for various search queries that can be derived from the claim using human annotation or generative models.
@@ -34,9 +34,9 @@ Our initial experiments with the whole \averitec{}  documents for the Document R
 
 Upon further examination, these are typically PDF documents of legislature, documentation and communication transcription -- highly relevant sources real fact-checker would scroll through to find the relevant part to refer. 
 
-This workflow resembles the chunk retrieval as used in~\cite{rag}, popularized for use with RAG.
-We partition each document into sets of sentences of combined length of $n$ characters at most.
-To take advantage of the full input size of the vector embedding model we use for semantical search, we set our bound $n=512*4=2048$, 512 being the input dimension of common embedding models, 4 often being used as a rule-of-thumb number of characters per token for US English in modern tokenizers~\cite{tokens}.
+This workflow inspires the use of \textit{document chunk retrieval} as used in~\cite{rag}, commonly paired with RAG.
+We partition each document into sets of its sentences of combined length of $N$ characters at most.
+To take advantage of the full input size of the vector embedding model we use for semantical search, we set our bound $N=512*4=2048$, 512 being the input dimension of common embedding models, 4 often being used as a rule-of-thumb number of characters per token for US English in modern tokenizers~\cite{tokens}.
 
 Importantly, each chunk is  assigned metadata -- the source URL, as well as the full text of the next and previous chunk within the same document.
 This way, chunks can be presented to the LLM along with their original context in the generation module, where the length constraint is much less of an issue than in vector embedding.
@@ -61,38 +61,51 @@ $Sim$ denoting the cosine-similarity between embeddings, $Q$ being the search qu
 
 In our system, we set $\lambda=0.75$ to favour relevancy rather than diversity, $|S|=10$ and $|P| = 40$, obtaining a set of diverse sources relevant to each claim at a fraction of cost and complexity of a query-generation driven retrieval, such as that used in~\cite{averitec2024}.
 
-\subsection{Evidence \& Label Generation}
+\subsection{Evidence \& Label Generator}
 \label{sec:generation}
-Rather than sampling evidence from retrieved text or QG+QA pipeline ran on the retrieved sentences, we argue that the modern LLMs offer the use of wider context, such as whole news articles.
+The second and the last module on our proposed pipeline for automated fact checking is the Evidence \& Label Generator, which receives a claim and $k$ sources (document chunks), and returns $l$ (in our case, $l=10$) question-answer pairs of evidence abstracted from the sources, along with the veracity verdict -- in \averitec{} dataset, a claim may be classified as \textit{Supported}, \textit{Refuted}, \textit{Not Enough Evidence}, or \textit{Conflicting Evidence/Cherrypicking} with respect to its evidence.
+
+Our approach leverages a Large Language Model (LLM), instructing it to output both evidence and the label in a single step, as a chain of thought.
+We rely on JSON-structured output generation with source referencing using a numeric identifier, we estimate the label confidences using Likert-scale ratings.
+The full system prompt can be examined in listing~\ref{lst:llm_system_prompt} and this section further explains the choices behind it.
 
 \subsubsection{JSON Generation}
-The current LLMs are trained very well for this~\cite{json}, allows for very simple integration of LLM into pipeline
+
+To be able to collect LLM's results programmatically, we exploit their capability to produced structured outputs, which is on rise, with datasets available for tuning~\cite{tang2024strucbenchlargelanguagemodels} and by the time of writing of this paper (August 2024), systems for strictly structured prediction are beginning to be launched by major providers~\cite{json}.
+
+Despite not having access to such structured-prediction API by the time of \averitec{} shared task, the current generation of models examined for the task (section~\ref{sec:chosen_llms}) rarely strays from the desired format if properly explained within a system prompt -- we instruct our models to output a JSON of pre-defined properties (see prompt listing~\ref{lst:llm_system_prompt}) featuring both evidence and the veracity verdict for a given claims.
+
+Although we implement fallbacks, less than 0.5\% of our predictions result in a parsing exception throughout experimentation, and could be easily recovered using the same prompting again, exploiting the intrinsic randomness of LLM predictions.
 
 \subsubsection{Chain-of-thought Prompting}
-While JSON dictionary should be order-invariant, we can actually exploit the order of outputs to make LLMS like GPT-4o output better results.~\cite{cot}
+While JSON dictionary should be order-invariant, we can actually exploit the order of outputs in our output structure to make LLMS like GPT-4o output better results.~\cite{cot}
+This is commonly referred to as the \say{chain-of-thought} prompting -- if we instruct the autoregressive LLM to first output the evidence (question, then answer), then a set of all labels with their confidence ratings (see section~\ref{likert}) and only then the final verdict, its prediction is both cheaper as opposed to implementing an extra module, as well as more reliable, as it must attend to all of the intermediate steps as well.
 
 \subsubsection{Source Referring}
-We assign a 1-based index to each of the sourced chunks and prompt the LLM to refer it as the source ID with each evidence it generates.
-This has been shown quite reliable in \cite{menick2022teachinglanguagemodelssupport}.
+To be able to backtrack the generated evidence to the urls of the used sources, we simply augment each question-answer pair with a source field.
+We assign a 1-based index to each of the sources to facilitate tokenization and prompt the LLM to refer it as the source ID with each evidence it generates.
+While hallucination can not be fully prevented, it is less common than it may appear -- with RAG gaining popularity, the models are being trained to cite their sources using special citation tokens~\cite{menick2022teachinglanguagemodelssupport}, not dissimilarly to our proposal.
 
-\subsubsection{Few-shot learning}
-Few-shot learning by giving examples within prompt has been shown to boost performance in generative task already since GPT-3~\cite{fewshot}.
-To further boost our system's evidence-generation capabilities, 
+\subsubsection{Dynamic Few-shot learning}
+To utilise the few-shot learning framework~\cite{fewshot} shown to increase quality of model output, we provide our LLMs with examples of what we expect the model to do.
+To obtain such examples, our evidence generator looks up the \averitec{} train set using BM25 to get the 10 most similar claims, providing them as the few-shot examples, along their gold evidence and veracity verdicts.
+Experimentally, we also few-shot our models to output an \textit{answer type} (\textit{Extractive}, \textit{Abstractive}, \textit{Boolean},\dots) as the \textit{answer type} is listed with each sample anyways, and we have observed its integration into the generation task to slightly boost our model performance.
 
-\subsubsection{Likert-scale Label Confidence}
+\subsubsection{Likert-scale Label Confidences}
 \label{likert}
 Despite modern LLMs being well capable of predicting the label in a \say{pick one} fashion, research applications such as ours may prefer them to output a probability distribution over all labels for two reasons.
 
 Firstly, it measures the confidence in each label, pinpointing the edge-cases, secondly, it allows ensembling the LLM classification with any other model, such as Encoders with classification head finetuned on the task of Natural Language Inference (NLI) (see section~\ref{subsubsec:ensembling}).
 
-As the LLMs and other token prediction schemes struggle with the prediction of continuous numbers which are notoriously hard to tokenize appropriately~\cite{golkar2023xvalcontinuousnumberencoding}, we come up with a simple alternative: using zero-shot learning, model is prompted to print each of the 4 possible labels, along with their Likert-scale rating: 1 for \say{strongly disagree}, 2 for \say{disagree}, 3 for \say{neutral}, 4 for \say{agree} and 5 for \say{strongly agree}~\cite{likert1932technique}.
+As the LLMs and other token prediction schemes struggle with the prediction of continuous numbers which are notoriously hard to tokenize appropriately~\cite{golkar2023xvalcontinuousnumberencoding}, we come up with a simple alternative: instructing the model to print each of the 4 possible labels, along with their Likert-scale rating: 1 for \say{strongly disagree}, 2 for \say{disagree}, 3 for \say{neutral}, 4 for \say{agree} and 5 for \say{strongly agree}~\cite{likert1932technique}.
 
-On top of the ease of tokenization, Likert scale's popularity in psychology and other fields such as software testing~\cite{likertstudy} adds another benefit -- both the scale itself and its appropriate usage was likely demonstrated many times to LLMs during their unsupervised training phase.
+On top of the ease of tokenization, Likert scale's popularity in psychology and other fields such as software testing~\cite{likertstudy} adds another benefit -- both the scale itself and its appropriate usage were likely demonstrated many times to LLMs during their unsupervised training phase.
 
 To convert the ratings such as \texttt{\{\say{Supported}:2, \say{Refuted}:5, \say{Cherrypicking}:4, \say{NEE}:2\}} to a kind of probability distribution, we simply use softmax~\cite{NIPS1989_0336dcba}.
 While the label probabilities are only emulated (and may only take a limited, discrete set of values) and the system may produce ties, it gets the job done until further research is carried out.
 
 \subsubsection{Choosing LLM}
+\label{sec:chosen_llms}
 In our experiments, we have tested the full set of techniques introduced in this section, computing the text completion requests with:
 \begin{enumerate}
     \item GPT-4o (version \texttt{2024-05-13})
@@ -100,4 +113,4 @@ In our experiments, we have tested the full set of techniques introduced in this
     \item LLaMA 3.1 70B, in the final experimets to see if the pipeline can be re-produced using open-source models
 \end{enumerate} 
 
-Their comparison can be seen in tables~\ref{tab:nli} and~\todo{tab}; for our submission in the \averitec{}  shared task, GPT-4o was used.
+Their comparison can be seen in tables~\ref{tab:nli} and~\ref{tab:pipeline_scores}; for our submission in the \averitec{}  shared task, GPT-4o was used.
