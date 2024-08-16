@@ -37,7 +37,7 @@ We conclude that the augmentation of the pipeline from figure~\ref{fig:pipeline}
 \subsection{Conflicting Evidence/Cherrypicking detection}
 
 During the experiments, we discovered that classifying the \textit{Conflicting Evidence/Cherrypicking} class is the most challenging task, achieving a near-zero $F_1$-score across our various prototype pipelines.
-To overcome this problem, we tried to build a binary classifier that would output one if the input claim is cherrypicked and 0 otherwise. We tried to use the DeBERTaV3 Large model with basic cross-entropy loss (other experimental settings were the same as in section~\ref{subsubsec:concatenation}), but it could not pick up the training task due to the \textit{Conflicting Evidence/Cherrypicking} underrepresentation in train set -- less than 7\% of the samples carry the label. 
+To overcome this problem, we tried to build a binary classifier with cherrypicking as positive class. We tried to use the DeBERTaV3 Large model with both basic and weighted cross-entropy loss (other experimental settings were the same as in section~\ref{subsubsec:concatenation}), but it could not pick up the training task due to the \textit{Conflicting Evidence/Cherrypicking} underrepresentation in train set -- less than 7\% of the samples carry the label. 
 
 Even after exploring various other methods, we did not get a reliable detection scheme for this task, perhaps motivating a future collection of data that represents the class better.
 While writing this system description paper, we found an interesting research by~\citet{jaradat2024contextawaredetectioncherrypickingnews} that uses a radically different approach to detect cherrypicking in newspaper articles.
