@@ -97,7 +97,7 @@ As the LLMs and other token prediction schemes struggle with the prediction of c
 
 On top of the ease of tokenization, Likert scale's popularity in psychology and other fields such as software testing~\cite{likertstudy} adds another benefit -- both the scale itself and its appropriate usage were likely demonstrated many times to LLMs during their unsupervised training phase.
 
-To convert the ratings such as \texttt{\{\say{Supported}:2, \say{Refuted}:5, \say{Cherrypicking}:4, \say{NEE}:2\}} to a kind of probability distribution, we simply use softmax~\cite{NIPS1989_0336dcba}.
+To convert the ratings such as \texttt{\{\say{Supported}:2, \say{Refuted}:5, \say{Cherrypicking}:4, \say{NEE}:2\}} to a probability distribution, we simply use softmax~\cite{NIPS1989_0336dcba}.
 While the label probabilities are only emulated (and may only take a limited, discrete set of values) and the system may produce ties, it gets the job done until further research is carried out.
 
 \subsubsection{Choosing LLM}
