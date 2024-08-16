@@ -51,10 +51,7 @@ This allows a quick and agile production of vectorstores for further querying an
 The pruning also keeps the resource intensity moderate for real-world applications -- if time is not of the essence, the step can be omitted.
 
 \subsubsection{Diversifying sources: MMR}
-While the original~\cite{averitec2024} baseline retrieved articles based on various different search queries to promote variety among search results, our approach omits this generation of \say{subqueries}.
-We aim to use an embedding-driven similarity search in the neighbourhood of the \textit{whole} original claim not to leave any piece of information behind or introduce other noise during the subquery generation.
-
-Our solution is, however, prone to redundancy among search results, which we address using a reranking by the results' Maximal Marginal Relevance (MMR)~\cite{carbonell-mmr}, a metric popular for the RAG task, which maximizes the search results' score computed as (for $D_i\in P$)
+While the embedding search based of the entire claim rather than generating its \say{search queries} introduces less noise and captures the semantics of the whole claim, it is, however, prone to redundancy among search results, which we address using a reranking by the results' Maximal Marginal Relevance (MMR)~\cite{carbonell-mmr}, a metric popular for the RAG task, which maximizes the search results' score computed as (for $D_i\in P$)
 $$\lambda \cdot \mathrm{Sim}(D_i, Q) - (1-\lambda) \cdot \max_{D_j \in S} \mathrm{Sim}(D_i, D_j)$$
 $Sim$ denoting the cosine-similarity between embeddings, $Q$ being the search query, and $P$ the pre-fetched set of documents (by a search which simply maximizes their $Sim$ to $Q$), forming $S$ as the final search result, by adding each $D_i$ as MMR-argmax one by one, until reaching its desired size.
 
