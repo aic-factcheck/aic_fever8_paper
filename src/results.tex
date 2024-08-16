@@ -13,11 +13,11 @@ In real world, however, the evidence quality is critical for the fact-checking t
 We therefore proceed to estimate it using the hu-METEOR evidence question score, QA score and \averitec{} score benchmarks briefly explained in Section~\ref{avscore} and in greater detail in~\cite{averitec2024}.
 We use the provided \averitec{} scoring script to calculate the values for Table~\ref{tab:pipeline_scores}, using its EvalAI blackbox to obtain the test scores without seeing the gold test data.
 
-The latter experiments shown in table~\ref{tab:pipeline_scores} suggests the superiority of GPT-4o to predict the results for our pipeline with a margin.
-Even if we simplify the evidence \& label generation step by omitting the dynamic fewshot-learning (section~\ref{sec:generation}), answer-type tuning and Likert-scale confidence emulation, it still scores above others, also showing that our pipeline can be further simplified when needed.
+The latter experiments shown in Table~\ref{tab:pipeline_scores} suggests the superiority of GPT-4o to predict the results for our pipeline with a margin.
+Even if we simplify the evidence \& label generation step by omitting the dynamic few-shot learning (section~\ref{sec:generation}), answer-type tuning and Likert-scale confidence emulation, it still scores above others, also showing that our pipeline can be further simplified when needed.
 Regardless of the LLM in use, the results of our pipeline improve upon the \averitec{} baseline dramatically.
 
-Posterior to the original experiments and to the \averitec{} submission deadline, we also compute the pipeline results using an open-source model -- the Llama 3.1 70B~\cite{dubey2024llama3herdmodels} obtaining encouraging scores, signifying our pipeline being adaptable to work well without the need to use a blackboxed proprietary LLM.
+Posterior to the original experiments and to the \averitec{} submission deadline, we also compute the pipeline results using an open-source model -- the Llama 3.1 70B\footnote{\url{https://huggingface.co/hugging-quants/Meta-Llama-3.1-70B-Instruct-AWQ-INT4}}~\cite{dubey2024llama3herdmodels} obtaining encouraging scores, signifying our pipeline being adaptable to work well without the need to use a blackboxed proprietary LLM.
 
 \subsection{API costs}
 During our experimentation July 2024, we have made around 9000 requests to OpenAI's \texttt{gpt-4o-2024-05-13} batch API, at a total cost of \$363.

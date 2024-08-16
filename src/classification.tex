@@ -9,7 +9,7 @@ The absence of a dedicated veracity classifier has not been shown to decrease th
 \subsection{Single-evidence classification with label aggregation}
 In the earliest stages of experimenting, we utilized the baseline classifier provided by \averitec{} authors\footnote{\url{https://huggingface.co/chenxwh/AVeriTeC}}~\cite{averitec2024}.
 It is based on the BERT~\cite{devlin-etal-2019-bert} and was further fine-tuned on the \averitec{}  dataset~\cite{averitec2024}. 
-It takes one claim and one question-answer evidence as input -- each claim therefore has multiple classifications, one for each evidence. The classifications are then aggregated using a heristic of several if-clauses to determine the final label. 
+It takes one claim and one question-answer evidence as input -- each claim therefore has multiple classifications, one for each evidence. The classifications are then aggregated using a heuristic of several if-clauses to determine the final label. 
 
 We experiment with altering this heuristic (e.g. by making \textit{not enough evidence} the final label only when no other labels are present at any evidence), and training NLI models that could work better with it, such as 3-way DeBERTaV3~\cite{he2023debertav3improvingdebertausing} without a breakthrough result, motivating a radically different approach.
 
@@ -18,7 +18,7 @@ We experiment with altering this heuristic (e.g. by making \textit{not enough ev
 The multi-evidence approach is to fine-tune a 4-way Natural Language Inference (NLI) classifier, using the full scope of evidence directly at once, without heuristics.
 For that, we concatenate all of the evidence together using a separator \texttt{[SEP]} token. This allows the model to know exact question-answer borders, albeit using a space has turned out to be just as accurate as the experiments went on. As the veracity verdict should be independent of the evidence ordering, we also experiment with sampling different permutations in the fine-tuning step to increase the size of our data.
 
-We carry out the fine-tuning using the \averitec{} train split with gold evidence and labels on DeBERTaV3~\cite{he2023debertav3improvingdebertausing} in two variants: the original large one\footnote{\url{https://huggingface.co/microsoft/deberta-v3-large}} and one pre-finetuned on NLI tasks\footnote{\url{https://huggingface.co/cross-encoder/nli-deberta-v3-large}}, and also Mistral-7B-v0.3 model\footnote{\url{https://huggingface.co/mistralai/Mistral-7B-v0.3}} with a classification head (MistralForSequenceClassification) provided by the Huggingface Transformers library~\cite{wolf-etal-2020-transformers} that utilizes the last token. In the preliminary testing phase, the original DeBERTaV3 Large performed the best and was used in all other experimental settings.
+We carry out the fine-tuning using the \averitec{} train split with gold evidence and labels on \mbox{DeBERTaV3}~\cite{he2023debertav3improvingdebertausing} in two variants: the original large one\footnote{\url{https://huggingface.co/microsoft/deberta-v3-large}} and one pre-finetuned on NLI tasks\footnote{\url{https://huggingface.co/cross-encoder/nli-deberta-v3-large}}, and also Mistral-7B-v0.3 model\footnote{\url{https://huggingface.co/mistralai/Mistral-7B-v0.3}} with a classification head (MistralForSequenceClassification) provided by the Huggingface Transformers library~\cite{wolf-etal-2020-transformers} that utilizes the last token. In the preliminary testing phase, the original DeBERTaV3 Large performed the best and was used in all other experimental settings.
 
 From the approaches described above, we achieved the best results for the development split with gold evidence and labels with a model without permuting the evidence, achieving 0.71 macro $F_1$ score using a space-separation. The \texttt{[SEP]} model achieved a comparable 0.70 macro $F_1$ score, and the random order model performed worse with a 0.67 macro $F_1$ score, all improving significantly upon baseline, yet falling behind the capabilities of generating the labels alongside evidence in a single chain-of-thought. 
 We provide our best DeBERTaV3 finetuned model publicly in a Huggingface repository\footnote{\url{https://huggingface.co/ctu-aic/deberta-v3-large-AVeriTeC-nli}}.
@@ -33,7 +33,7 @@ We also tried tuning our ensemble weights based on a subset of the dev split, wi
 
 The last method we tried was stacking using logistic regression. However, this setup classified no labels from \textit{Not Enough Evidence} and \textit{Conflicting Evidence/Cherrypicking}, and we could not achieve reasonable results. For logistic regression, we used the scikit-learn library~\cite{scikit-learn}.
 
-We conclude that the augmentation of the pipeline from figure~\ref{fig:pipeline} with a classification module using a single NLI model or an ensemble with LLM is unneccessary, as it adds complexity and computational cost without paying off on the full pipeline performance (table~\ref{tab:pipeline_scores}).
+We conclude that the augmentation of the pipeline from figure~\ref{fig:pipeline} with a classification module using a single NLI model or an ensemble with LLM is unneccessary, as it adds complexity and computational cost without paying off on the full pipeline performance (Table~\ref{tab:pipeline_scores}).
 
 \subsection{Conflicting Evidence/Cherrypicking detection}
 

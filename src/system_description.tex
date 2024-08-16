@@ -2,19 +2,19 @@
 
 \section{System description}
 \label{sec:system}
-Our system is designed to be simple and its core could be described as simply a RAG pipeline with customized retriever and LLM prompting (listing~\ref{lst:llm_system_prompt}).
+Our system is designed to be simple and its core could be described as simply a RAG pipeline with customized retriever and LLM prompting (Listing~\ref{lst:llm_system_prompt}).
 Despite that, this section describes and justifies our decisions taken at each step, our additions to the naive version of RAG modules to tune them for the specific task of fact-checking, and their impact on the system performance.
 
 \subsection{Retrieval module}
 \label{retrieval}
 To ease comparison with the baseline and other systems designed for the task, our system does not use direct internet/search-engine access for its retrieval, but an \averitec{} \textit{knowledge store} provided alongside each claim.
 
-To use our pipeline in the wild, our retrieval module is decoupled from the rest of the pipeline and can be swapped out in favour of an internet search module such as SerpApi as a whole, or it can be used on top of a knowledge store emulated using search API or a cheap on-premise search over large crawled corpora such as CommonCrawl.
+To use our pipeline in the wild, our retrieval module is decoupled from the rest of the pipeline and can be swapped out in favour of an internet search module such as SerpApi\footnote{\url{https://serpapi.com/}} as a whole, or it can be used on top of a knowledge store emulated using search API or a cheap on-premise search over large crawled corpora such as CommonCrawl\footnote{\url{https://commoncrawl.org/}}.
 
 \subsubsection{Knowledge stores}
 Each claim's knowledge store contains pre-scraped results for various search queries that can be derived from the claim using human annotation or generative models.
 The knowledge stores used with ours as well as the baseline system can be downloaded from the \averitec{}  dataset page\footnote{\url{https://fever.ai/dataset/averitec.html}}, containing about 1000 pre-scraped \textit{documents}\footnote{\label{devsetnote} The numbers are orientational and were computed on knowledge stores provided for the \averitec{}  dev set.}, each consisting of $28$ sentences at median\footnoteref{devsetnote}, albeit varying wildly between documents.
-The methods used for generating the knowledge stores are explained in more detail in~\cite{averitec2024}.
+The methods used for generating the knowledge stores are explained in more detail by~\citet{averitec2024}.
 %To use our system in the wild, this knowledge store can be emulated using a search API such as SerpApi, or even a large document collection such as Common Crawl pruned down to similar orders of magnitude using a cheap retrieval method and the claim as a search query.
 
 Our retrieval module then focuses on picking a set of $k$ ($k=10$ in the examples below, as well as in our submitted system) most appropriate document chunks to fact-check the provided claim within this knowledge store.
@@ -44,8 +44,8 @@ Splitting our data into the maximum chunks that fit our retrieval model and prov
 
 \subsubsection{Pruning the chunks}
 While the chunking of long articles prevents their information from getting lost to retriever, it makes its search domain too large to embed on demand.
-As each of the thousands of claims has its own knowledge store, each of possibly tens of thousands of chunks, we seek to omit the chunks having little to no common tokens with our claim using an efficient BM25~\cite{bm25} search for the nearest $\Omega$ chunks, setting the $\Omega$ to 6000 for dev and 2000 for test claims. 
-This yields a reasonably-sized document store for embedding each chunk into a vector, taking an average of 40s to compute and store using the method described in Section~\ref{sec:knn} for each dev-claim using our Tesla V100 GPU.
+As each of the thousands of claims has its own knowledge store, each of possibly tens of thousands of chunks, we seek to omit the chunks having little to no common tokens with our claim using an efficient BM25~\cite{bm25} search for the nearest $\omega$ chunks, setting the $\omega$ to 6000 for dev and 2000 for test claims. 
+This yields a reasonably-sized document store for embedding each chunk into a vector, taking an average of 40 s to compute and store using the method described in Section~\ref{sec:knn} for each dev-claim using our Tesla V100 GPU.
 
 This allows a quick and agile production of vectorstores for further querying and experimentation, motivated by the \averitec{}  test data being published just several days before the announced submission deadline.
 The pruning also keeps the resource intensity moderate for real-world applications -- if time is not of the essence, the step can be omitted.
@@ -66,13 +66,13 @@ The second and the last module on our proposed pipeline for automated fact check
 
 Our approach leverages a Large Language Model (LLM), instructing it to output both evidence and the label in a single step, as a chain of thought.
 We rely on JSON-structured output generation with source referencing using a numeric identifier, we estimate the label confidences using Likert-scale ratings.
-The full system prompt can be examined in listing~\ref{lst:llm_system_prompt} and this section further explains the choices behind it.
+The full system prompt can be examined in Listing~\ref{lst:llm_system_prompt} and this section further explains the choices behind it.
 
 \subsubsection{JSON generation}
 
-To be able to collect LLM's results programmatically, we exploit their capability to produced structured outputs, which is on rise, with datasets available for tuning~\cite{tang2024strucbenchlargelanguagemodels} and by the time of writing of this paper (August 2024), systems for strictly structured prediction are beginning to be launched by major providers~\cite{json}.
+To be able to collect LLM's results programmatically, we exploit their capability to produce structured outputs, which is on rise, with datasets available for tuning~\cite{tang2024strucbenchlargelanguagemodels} and by the time of writing of this paper (August 2024), systems for strictly structured prediction are beginning to be launched by major providers~\cite{json}.
 
-Despite not having access to such structured-prediction API by the time of \averitec{} shared task, the current generation of models examined for the task (section~\ref{sec:chosen_llms}) rarely strays from the desired format if properly explained within a system prompt -- we instruct our models to output a JSON of pre-defined properties (see prompt listing~\ref{lst:llm_system_prompt}) featuring both evidence and the veracity verdict for a given claims.
+Despite not having access to such structured-prediction API by the time of \averitec{} shared task, the current generation of models examined for the task (section~\ref{sec:chosen_llms}) rarely strays from the desired format if properly explained within a system prompt -- we instruct our models to output a JSON of pre-defined properties (see prompt Listing~\ref{lst:llm_system_prompt}) featuring both evidence and the veracity verdict for a given claims.
 
 Although we implement fallbacks, less than 0.5\% of our predictions result in a parsing exception throughout experimentation, and could be easily recovered using the same prompting again, exploiting the intrinsic randomness of LLM predictions.
 
