@@ -3,7 +3,7 @@
 \section{Results and analysis}
 \label{sec:results}
 
-We examine our pipeline results using two sets of metrics -- firstly, using the classification accuracy metrics over predicted labels without any ablation, that is obtaining the predicted labels using the predicted evidence generated on top the predicted retrieval results. While the retrieval module is fixed throughout this experiment (a full scheme described in section~\ref{retrieval}), various Evidence \& Label generators and classifiers are listed in Table~\ref{tab:nli} to give comparison on their performance on the same sources.
+We examine our pipeline results using two sets of metrics -- firstly, using the classification accuracy and $F_1$ over predicted labels without any ablation, that is obtaining the predicted labels using the predicted evidence generated on top the predicted retrieval results. While the retrieval module is fixed throughout the experiment (a full scheme described in section~\ref{retrieval}), various Evidence \& Label generators and classifiers are compared in Table~\ref{tab:nli}, showcasing their performance on the same sources.
 \begin{table}[H]
     \input{figures/eval_table.tex}
 \end{table}
@@ -11,6 +11,8 @@ We examine our pipeline results using two sets of metrics -- firstly, using the 
 \begin{table*}[h]
     \input{figures/pipeline_table.tex}
 \end{table*}
+Secondly, we compute the hu-METEOR question score, QA score and \averitec{} score metrics briefly explained in Section~\ref{avscore} and in greater detail in~\cite{averitec2024}.
+The script provided with the baseline system was used to calculate the values for Table~\ref{tab:pipeline_scores}, using the EvalAI blackbox to obtain the test scores without seeing the gold test data.
 
 \subsection{API costs}
 During our experimentation July 2024, we have made around 9000 requests to OpenAI's \texttt{gpt-4o-2024-05-13} batch API, at a total cost of \$363.
