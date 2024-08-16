@@ -114,16 +114,18 @@ Another limitation is that we are using a large language model. Because of that,
 The reliability of the generated text is a limitation that is often linked to LLMs. LLMs sometimes hallucinate (in our case, it would mean using sources other than those given in the system prompt), and they can be biased based on their extensive training data. Moreover, because of the dataset size, it is impossible to validate each output of the LLM, and thus, we are not able to 100 \% guarantee the quality of the results.
 
 \section*{Ethics Statement}
-\todo{tohle bude potreba: 1. neni to skutecny plugnplay factchecker, ale studie jeho budouci proveditelnosti neni to skutecny factchecker ale jen poc studie jeho proveditelnosti a kvantifikace toho jak moc to uz dnes jde 2. tim ze to bylo tuneny na uspech nad \averitec{}  sadou tak to odrazi zaujeti jeho anotatoru (todo citace).}
+It is essential to note that our pipeline is not a real fact-checker that could do a human job but rather a study of future possibilities in automatic fact-checking and a showcase of the current capabilities of state-of-the-art language models. The pipeline in its current state should only be used with human supervision because of the potential biases and errors that could harm the consumers of the output information or persons mentioned in the claims. The pipeline could be misused to spread misinformation by directly using misinformation sources or by intentionally modifying the pipeline in a way that will generate wrong outputs.
 
-\todo{emlp ethics faq: https://2021.emnlp.org/call-for-papers/ethics-faq - sections ...if my paper involves an NLP application?, ... if my paper reports on experiments that involve lots of compute time/power?}
+Another important statement is that our pipeline was in its current form explicitly built for the \averitec{} shared task, and thus, the evaluation results reflect the bias of the annotators. For more information, see the relevant section of the original paper~\cite{averitec2024}.
+
+The carbon costs of the training and running of our pipeline are considerable and should be taken into account given the urgency of climate change. At the time of deployment, the pipeline should be run on the smallest possible model that can still provide reliable results, and the latest hardware and software optimisations should be used to minimise the carbon footprint.
 
 \section*{Acknowledgements}
 We would like to thank Bryce Aaron from UNC for exploring the problems of search query generation and pinpointing claims of underrepresented labels using numerical methods that did not make it into our final pipeline but gave us a frame for comparison. 
 
 This research was co-financed with state support from the Technology Agency of the Czech Republic and the Ministry of Industry and Trade of the Czech Republic under the TREND Programme, project FW10010200.
 The access to the computational infrastructure of the OP VVV funded project CZ.02.1.01/0.0/0.0/16\_019/0000765 ``Research Center for Informatics'' is also gratefully acknowledged.
-We would like to thank to OpenAI for providing free credit for their paid API via Researcher Access Program\footnote{https://openai.com/form/researcher-access-program/}.
+We would like to thank to \mbox{OpenAI} for providing free credit for their paid API via Researcher Access Program\footnote{https://openai.com/form/researcher-access-program/}.
 
 
 
