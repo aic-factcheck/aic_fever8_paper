@@ -2,46 +2,56 @@
 
 \section{Examples of Errors}
 \label{appendix_sec:errors}
-
+\lstset{
+    basicstyle=\ttfamily\footnotesize\linespread{0.9}, % Smaller font with less spacing
+    numbers=left, % Line numbers on the left
+    stepnumber=1, % Line numbers for every line
+    numbersep=5pt, % Space between line numbers and code
+    tabsize=4, % Size of tabs
+    showstringspaces=false, % Don't show spaces in strings
+    breaklines=true, % Line wrapping
+    breakatwhitespace=true,
+    frame=lines, % Add a frame around the code
+    captionpos=b, % Caption at the 
+    breakindent=1em,
+    frame=single
+}
 
 \begin{lstlisting}[caption={Example of a claim where our pipeline uses newspaper sources instead of official government sources.}, label={lst:gov_error}, breaklines=true, breakatwhitespace=false, columns=fullflexible]
-    Claim 479: Donald Trump said "When the anarchists started ripping down our statues and monuments, right outside, I signed an order immediately, 10 years in prison."
+Claim 479: Donald Trump said "When the anarchists started ripping down our statues and monuments, right outside, I signed an order immediately, 10 years in prison."
 
-    gold evidence example: 
-        question: What was the law signed by Trump regarding damaging federal property?
-        answer: Trump signed an executive order that authorizes a penalty of up to 10 years in prison for damaging federal property. It does not say that it will automatically be a 10 year prison sentence.,
-        source_url: https://web.archive.org/web/20210224033536/https://www.whitehouse.gov/presidential-actions/executive-order-protecting-american-monuments-memorials-statues-combating-recent-criminal-violence/
+gold evidence example: 
+    question: What was the law signed by Trump regarding damaging federal property?
+    answer: Trump signed an executive order that authorizes a penalty of up to 10 years in prison for damaging federal property. It does not say that it will automatically be a 10 year prison sentence.,
+    source_url: https://web.archive.org/web/20210224033536/https://www.whitehouse.gov/presidential-actions/executive-order-protecting-american-monuments-memorials-statues-combating-recent-criminal-violence/
 
-    pipeline evidence example: 
-        question: Did Trump sign an order related to vandalism of statues and monuments?, 
-        answer: Yes, Trump signed an executive order to prosecute those who damage national monuments, making it a punishable offense with up to 10 years in jail.,
-        url: https://m.economictimes.com/news/international/world-news/trump-makes-vandalising-national-monuments-punishable-offence-with-up-to-10-yrs-jail/articleshow/76658610.cms
+pipeline evidence example: 
+    question: Did Trump sign an order related to vandalism of statues and monuments?, 
+    answer: Yes, Trump signed an executive order to prosecute those who damage national monuments, making it a punishable offense with up to 10 years in jail.,
+    url: https://m.economictimes.com/news/international/world-news/trump-makes-vandalising-national-monuments-punishable-offence-with-up-to-10-yrs-jail/articleshow/76658610.cms
     
 \end{lstlisting}
 
 \begin{lstlisting}[caption={Example of a claim and questions showing that the last tends to be unrelated or redundant to fact-checking of the claim.}, label={lst:unrelated_questions}, breaklines=true, breakatwhitespace=false, columns=fullflexible]
-    Claim 295: Trump campaign asked Joe Biden to release a list of potential Supreme Court picks only after Ginsburg's passing
-
-    question 1: Did Joe Biden claim that the Trump campaign asked him to release a list of potential Supreme Court picks only after Ginsburg's passing?
-    question 2: Did the Trump campaign ask Joe Biden to release a list of potential Supreme Court picks before Ginsburg's passing?
-    question 3: When did Trump release his latest list of potential Supreme Court nominees?
-    question 4: Did Trump personally demand that Biden release a list of potential Supreme Court nominees before Ginsburg's death?
-    question 5: What did Trump say about Biden releasing a list of potential Supreme Court nominees during the Republican National Convention?
-    question 6: Did the Trump campaign issue a statement on September 17, 2020, regarding Biden releasing a list of potential Supreme Court nominees?
-    question 7: What did the Trump campaign's statement on September 9, 2020, say about Biden releasing a list of potential Supreme Court nominees?
-    question 8: Did Biden indicate in June 2020 that he might release a list of potential Supreme Court picks?
-    quetion 9: What reason did Biden give for not releasing a list of potential Supreme Court nominees?,
-    question 10: Did Biden pledge to nominate a Black woman to the Supreme Court?
+Claim 295: Trump campaign asked Joe Biden to release a list of potential Supreme Court picks only after Ginsburg's passing
+question 1: Did Joe Biden claim that the Trump campaign asked him to release a list of potential Supreme Court picks only after Ginsburg's passing?
+question 2: Did the Trump campaign ask Joe Biden to release a list of potential Supreme Court picks before Ginsburg's passing?
+question 3: When did Trump release his latest list of potential Supreme Court nominees?
+question 4: Did Trump personally demand that Biden release a list of potential Supreme Court nominees before Ginsburg's death?
+question 5: What did Trump say about Biden releasing a list of potential Supreme Court nominees during the Republican National Convention?
+question 6: Did the Trump campaign issue a statement on September 17, 2020, regarding Biden releasing a list of potential Supreme Court nominees?
+question 7: What did the Trump campaign's statement on September 9, 2020, say about Biden releasing a list of potential Supreme Court nominees?
+question 8: Did Biden indicate in June 2020 that he might release a list of potential Supreme Court picks?
+quetion 9: What reason did Biden give for not releasing a list of potential Supreme Court nominees?,
+question 10: Did Biden pledge to nominate a Black woman to the Supreme Court?
     
 \end{lstlisting}
 
 \begin{lstlisting}[caption={Example of a claim where our pipeline did not exactly extract the answer.}, label={lst:extractive_error}, breaklines=true, breakatwhitespace=false, columns=fullflexible]
-    Claim #155 - Trump said 'there were fine people on both side' in far-right protests.
+Claim #155 - Trump said 'there were fine people on both side' in far-right protests.
+answer: "You had some very bad people in that group, but you also had people that were very fine people, on both sides.", 
+answer_type: Extractive
+url: https://www.theatlantic.com/politics/archive/2017/08/trump-defends-white-nationalist-protesters-some-very-fine-people-on-both-sides/537012/
+scraped text: ... "You also had some very fine people on both sides," he said. The Unite the Right rally that sparked the violence in Charlottesville featured several leading names in the white-nationalist alt-right movement, and also attracted people displaying Nazi symbols. ...
 
-    answer: "You had some very bad people in that group, but you also had people that were very fine people, on both sides.", 
-    answer_type: Extractive
-    url: https://www.theatlantic.com/politics/archive/2017/08/trump-defends-white-nationalist-protesters-some-very-fine-people-on-both-sides/537012/
-
-    scraped text: ... "You also had some very fine people on both sides," he said. The Unite the Right rally that sparked the violence in Charlottesville featured several leading names in the white-nationalist alt-right movement, and also attracted people displaying Nazi symbols. ...
-    
 \end{lstlisting}
