@@ -17,14 +17,19 @@ The use of open-source models such as LLaMa or Mistral allows running our pipeli
 For further experiments, we are looking to integrate them into the attached Python library using VLLM~\cite{vllm}.
 
 \subsection{Strenghts \& Error analysis}
-In this section we provide results of an exploratory analysis of 20 randomly selected samples from the development set. We divide our analysis into three parts: pipeline strenghts and errors, and dataset errors which we came across during our reviewing of the samples.
+In this section we provide results of an explorative analysis of 20 randomly selected samples from the development set. We divide our analysis into three parts: pipeline strenghts, pipeline errors, and dataset errors which we came across during our reviewing of the samples.
+
+
+\subsubsection*{Pipeline Errors}
+\todo{používání více neoficiálních zdrojů ("gov" chyba) než anotátoři - u nás více noviny s volnějším stylem vs gov s tabulkami apod, otázky navíc (udělali jsme 10), extractive answers error (ale ne vždy -> future works), ?často čerpá hodněkrát z jednoho zdroje?, nevyužití claim date, neschopnost analýzy tabulek? }
+Our pipeline tends to rely on unofficial (often newspaper) sources rather than on official government sources with domain ending or containing \texttt{.gov}. On the other hand, the annotators prefer those sources. In the future work the pipeline should give more weight to the "official" sources (employ a better source selection mechanism).
+
+Another thing we have encounteres is that our pipeline outputs 10 question-answer pairs even though smaller number would be sufficient for a decision.
+\subsubsection*{Dataset Errors}
+\todo{politifact leakage (leads even to error when our pipeline gives support instead of NEE), občas divné otázky (obecné, outside knowledge etc.), různě dlouhé otázky/odpovědi u různých datapoint (nekonzistence + zbytečné informace v odpovědích -> snižují skóre)}
 
 \subsubsection*{Strenghts}
 \todo{podle mě pěkné otázky, zdá se že dodržuje zadané zdroje a nebere informace ze sebe}
-\subsubsection*{Pipeline Errors}
-\todo{používání více neoficiálních zdrojů ("gov" chyba) než anotátoři - u nás více noviny s volnějším stylem vs gov s tabulkami apod, otázky navíc (udělali jsme 10), extractive answers error (ale ne vždy -> future works), ?často čerpá hodněkrát z jednoho zdroje?, nevyužití claim date, neschopnost analýzy tabulek? }
-\subsubsection*{Dataset Errors}
-\todo{politifact leakage (leads even to error when our pipeline gives support instead of NEE), občas divné otázky (obecné, outside knowledge etc.), různě dlouhé otázky/odpovědi u různých datapoint (nekonzistence + zbytečné informace v odpovědích -> snižují skóre)}
 
 \todo{what with this?}
 All of the classifiers and pipelines we have set up for our task have exposed a significant dip in $F_1$ label score for the \texttt{Not Enough Evidence} and \texttt{Conflicting Evidence/Cherrypicking} labels.
