@@ -2,6 +2,8 @@
 
 \section{System Description}
 \label{sec:system}
+Our system is designed to be simple and its core could be described as simply a RAG pipeline with customized retriever and LLM prompting (listing~\ref{lst:llm_system_prompt}).
+Despite that, this section describes and justifies our decisions taken at each step, our additions to the naive version of RAG modules to tune them for the specific task of fact-checking, and their impact on the system performance.
 
 \subsection{Retrieval Module}
 To ease comparison with the baseline and other systems designed for the task, our system does not use direct internet/search-engine access for its retrieval, but an \averitec{} \textit{knowledge store} provided alongside each claim.
