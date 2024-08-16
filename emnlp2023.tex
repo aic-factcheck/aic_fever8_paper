@@ -108,13 +108,13 @@ This paper describes our $3^{rd}$ place submission in the \averitec{} shared tas
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section*{Limitations}
-The evaluation of our fact-checking pipeline is limited to the English language and the \averitec{} dataset\cite{averitec2024}. This is a severe limitation as the pipeline when deployed in a real-world application, would encounter other languages and forms of claims not covered by the used dataset.
+The evaluation of our fact-checking pipeline is limited to the English language and the \averitec{} dataset~\cite{averitec2024}. This is a severe limitation as the pipeline when deployed in a real-world application, would encounter other languages and forms of claims not covered by the used dataset.
 
 Another limitation is that we are using a large language model. Because of that, future usage is limited to using an API of a provider of LLMs or having access to a large amount of computational resources, which comes at significant costs. Using APIs also brings the disadvantage of sending data to a third party, which might be a security risk in some critical applications. LLM usage also has an undeniable environmental impact because of the vast amount of electricity and resources used.
 
 The reliability of the generated text is a limitation that is often linked to LLMs. LLMs sometimes hallucinate (in our case, it would mean using sources other than those given in the system prompt), and they can be biased based on their extensive training data. Moreover, because of the dataset size, it is impossible to validate each output of the LLM, and thus, we are not able to 100 \% guarantee the quality of the results.
 
-\section*{Ethics Statement}
+\section*{Ethics statement}
 It is essential to note that our pipeline is not a real fact-checker that could do a human job but rather a study of future possibilities in automatic fact-checking and a showcase of the current capabilities of state-of-the-art language models. The pipeline in its current state should only be used with human supervision because of the potential biases and errors that could harm the consumers of the output information or persons mentioned in the claims. The pipeline could be misused to spread misinformation by directly using misinformation sources or by intentionally modifying the pipeline in a way that will generate wrong outputs.
 
 Another important statement is that our pipeline was in its current form explicitly built for the \averitec{} shared task, and thus, the evaluation results reflect the bias of the annotators. For more information, see the relevant section of the original paper~\cite{averitec2024}.

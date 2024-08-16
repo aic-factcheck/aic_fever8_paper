@@ -14,7 +14,7 @@ We examine our pipeline results using two sets of metrics -- firstly, using the 
 Secondly, we compute the hu-METEOR question score, QA score and \averitec{} score metrics briefly explained in Section~\ref{avscore} and in greater detail in~\cite{averitec2024}.
 The script provided with the baseline system was used to calculate the values for Table~\ref{tab:pipeline_scores}, using the EvalAI blackbox to obtain the test scores without seeing the gold test data.
 
-\subsection{API Costs}
+\subsection{API costs}
 During our experimentation July 2024, we have made around 9000 requests to OpenAI's \texttt{gpt-4o-2024-05-13} batch API, at a total cost of \$363.
 This gives a mean cost estimate of \$0.04 per a single fact-check (or \$0.08 using the API without the batch discount) that can be further reduced using cheaper models, such as \texttt{gpt-4o-2024-08-06}.
 
@@ -24,11 +24,11 @@ Our successive experiments with LLaMa 3.1~\cite{meta2024llama31} show promising 
 The use of open-source models such as LLaMa or Mistral allows running our pipeline on premise, without leaking data to a third party and billing anything else than the computational resources.
 For further experiments, we are looking to integrate them into the attached Python library using VLLM~\cite{vllm}.
 
-\subsection{Strenghts \& Error analysis}
+\subsection{Error analysis}
 In this section, we provide the results of an explorative analysis of 20 randomly selected samples from the development set. We divide our description of the analysis into the pipeline and dataset errors.
 
 
-\subsubsection{Pipeline Errors}
+\subsubsection{Pipeline errors}
 Our pipeline tends to rely on unofficial (often newspaper) sources rather than official government sources, e.g., with a domain ending or containing \texttt{gov}. On the other hand, it seems that the annotators prefer those sources. This could be remedied by implementing a different source selection strategy, preferring those official sources. For an example, see Listing~\ref{lst:gov_error}.
 
 Another thing that could be recognised as an error is that our pipeline usually generates all ten allowed questions (upper bound given by the task~\cite{averitec2024}). The analysis of the samples shows that the last questions are often unrelated or redundant to the claim and do not contribute directly to better veracity evaluation. However, since the classification step of our pipeline is not dependent on the number of question-answer pairs, this is not a critical error. Moreover, when the pipeline is evaluated using the \averitec{} dataset evaluation, it slightly helps with the perfect matching step using the Hungarian algorithm. Listing~\ref{lst:unrelated_questions} shows an example of a datapoint with some unrelated questions.
@@ -37,7 +37,7 @@ When the pipeline generates extractive answers, it sometimes happens that the an
 
 Individual errors were also caused by the fact that we do not use the claim date in our pipeline and because our pipeline cannot analyse PDFs with tables properly. The last erroneous behaviour we have noticed is that the majority of questions and answers are often generated from a single source. This should not be viewed as an error, but by introducing diversity into the sources, the pipeline would be more reliable when deployed in real-world scenarios.
 
-\subsubsection{Dataset Errors}
+\subsubsection{Dataset errors}
 During the error analysis of our pipeline, we also found some errors in the \averitec{} dataset that we would like to mention. In some cases, there is a leakage of PolitiFact fact-checking articles where the claim is already fact-checked. This leads to a situation where our pipeline gives a correct verdict using the leaked evidence. However, annotators gave a different label (often Not Enough Evidence). 
 
 Another issue we have noticed is the inconsistency in the questions and answers given by annotators. Sometimes, they are long, including non-relevant information, but sometimes, they are at the correct length. The questions are often too general, or the annotators seem to use outside knowledge. This inconsistency in the dataset leads to a decreased performance of any models evaluated on this dataset.
