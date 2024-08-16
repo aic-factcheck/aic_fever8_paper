@@ -107,10 +107,14 @@ This paper describes our $3^{rd}$ place submission in the \averitec{} shared tas
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section*{Limitations}
-\todo{Je to testovany jen v EN, neni to skutecny factchecker ale jen poc studie jeho proveditelnosti a kvantifikace toho jak moc to uz dnes jde 2. diskriminuje to pristupem k velkymu compute, bud posles velky firme data nebo nakoupis drahy compute. 3. ma to uhlikovou stopu jak traktor. Neprosli jsme ta data. - TM: Možná spolehlivost? Můžeme se spolehnout že nebude halucinovat, používat jiné zdroje apod?}
+The evaluation of our fact-checking pipeline is limited to the English language and the \averitec{} dataset\cite{averitec2024}. This is a severe limitation as the pipeline when deployed in a real-world application, would encounter other languages and forms of claims not covered by the used dataset.
+
+Another limitation is that we are using a large language model. Because of that, future usage is limited to using an API of a provider of LLMs or having access to a large amount of computational resources, which comes at significant costs. Using APIs also brings the disadvantage of sending data to a third party, which might be a security risk in some critical applications. LLM usage also has an undeniable environmental impact because of the vast amount of electricity and resources used.
+
+The reliability of the generated text is a limitation that is often linked to LLMs. LLMs sometimes hallucinate (in our case, it would mean using sources other than those given in the system prompt), and they can be biased based on their extensive training data. Moreover, because of the dataset size, it is impossible to validate each output of the LLM, and thus, we are not able to 100 \% guarantee the quality of the results.
 
 \section*{Ethics Statement}
-\todo{tohle bude potreba: 1. neni to skutecny plugnplay factchecker, ale studie jeho budouci proveditelnosti 2. tim ze to bylo tuneny na uspech nad \averitec{}  sadou tak to odrazi zaujeti jeho anotatoru (todo citace).}
+\todo{tohle bude potreba: 1. neni to skutecny plugnplay factchecker, ale studie jeho budouci proveditelnosti neni to skutecny factchecker ale jen poc studie jeho proveditelnosti a kvantifikace toho jak moc to uz dnes jde 2. tim ze to bylo tuneny na uspech nad \averitec{}  sadou tak to odrazi zaujeti jeho anotatoru (todo citace).}
 
 \todo{emlp ethics faq: https://2021.emnlp.org/call-for-papers/ethics-faq - sections ...if my paper involves an NLP application?, ... if my paper reports on experiments that involve lots of compute time/power?}
 
