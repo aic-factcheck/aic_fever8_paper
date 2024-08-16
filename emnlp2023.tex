@@ -94,7 +94,11 @@ Prague, Czech Republic\\
   \maketitle
 }
 \begin{abstract}
-This paper describes our $3^{rd}$ place submission in the \averitec{} shared task in which we attempted to address the challenge of fact-checking using evidence retrieved from web using a simple scheme of Retrieval-Augmented Generation designed for the task.\footnote{\url{https://github.com/aic-factcheck/aic_averitec}}
+This paper describes our $3^{rd}$ place submission in the \averitec{} shared task in which we attempted to address the challenge of fact-checking with evidence retrieved in the wild using a simple scheme of Retrieval-Augmented Generation (RAG) designed for the task, leveraging the predictive power of Large Language Models.
+We release our codebase\footnote{\url{https://github.com/aic-factcheck/aic_averitec}}, and explain its two modules -- the Retriever and the Evidence \& Label generator -- in detail, justifying their features such as MMR-reranking and Likert-scale confidence estimation.
+We evaluate our solution on \averitec{} dev and test-set, interpret the results picking the GPT-4o to be the most appropriate model for our pipeline at the time of our publication, with Llama 3.1 70B being a promising open-source alternative.
+We perform an empirical error analysis to see that faults in our predictions often coincede with noise in the data or ambiguous fact-checks, provoking further research and data augmentation.
+
 \end{abstract}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

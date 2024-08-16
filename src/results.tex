@@ -6,7 +6,7 @@
 We examine our pipeline results using two sets of metrics -- firstly, we measure the prediction accuracy and $F_1$ over predict labels without any ablation, that is obtaining predicted labels using the predicted evidence generated on top the predicted retrieval results. 
 While the retrieval module is fixed throughout the experiment (a full scheme described in section~\ref{retrieval}), various Evidence \& Label generators and classifiers are compared in Table~\ref{tab:nli}, showcasing their performance on the same sources.
 The results show that if we disregard the quality of evidence, models are more or less interchangeable, without a clear winner across the board -- an ensemble of DeBERTA and Claude-3.5-Sonnet gives the best $F_1$ score, while GPT-4o scores 72\% accuracy.
-\begin{table}[H]\input{figures/eval_table.tex}\end{table}
+\begin{table}[h]\input{figures/eval_table.tex}\end{table}
 
 \begin{table*}[h]\input{figures/pipeline_table.tex}\end{table*}
 In real world, however, the evidence quality is critical for the fact-checking task.
