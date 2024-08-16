@@ -3,16 +3,21 @@
 \section{Results and analysis}
 \label{sec:results}
 
-We examine our pipeline results using two sets of metrics -- firstly, using the classification accuracy and $F_1$ over predicted labels without any ablation, that is obtaining the predicted labels using the predicted evidence generated on top the predicted retrieval results. While the retrieval module is fixed throughout the experiment (a full scheme described in section~\ref{retrieval}), various Evidence \& Label generators and classifiers are compared in Table~\ref{tab:nli}, showcasing their performance on the same sources.
-\begin{table}[H]
-    \input{figures/eval_table.tex}
-\end{table}
+We examine our pipeline results using two sets of metrics -- firstly, we measure the prediction accuracy and $F_1$ over predict labels without any ablation, that is obtaining predicted labels using the predicted evidence generated on top the predicted retrieval results. 
+While the retrieval module is fixed throughout the experiment (a full scheme described in section~\ref{retrieval}), various Evidence \& Label generators and classifiers are compared in Table~\ref{tab:nli}, showcasing their performance on the same sources.
+The results show that if we disregard the quality of evidence, models are more or less interchangeable, without a clear winner across the board -- an ensemble of DeBERTA and Claude-3.5-Sonnet gives the best $F_1$ score, while GPT-4o scores 72\% accuracy.
+\begin{table}[H]\input{figures/eval_table.tex}\end{table}
 
-\begin{table*}[h]
-    \input{figures/pipeline_table.tex}
-\end{table*}
-Secondly, we compute the hu-METEOR question score, QA score and \averitec{} score metrics briefly explained in Section~\ref{avscore} and in greater detail in~\cite{averitec2024}.
-The script provided with the baseline system was used to calculate the values for Table~\ref{tab:pipeline_scores}, using the EvalAI blackbox to obtain the test scores without seeing the gold test data.
+\begin{table*}[h]\input{figures/pipeline_table.tex}\end{table*}
+In real world, however, the evidence quality is critical for the fact-checking task.
+We therefore proceed to estimate it using the hu-METEOR evidence question score, QA score and \averitec{} score benchmarks briefly explained in Section~\ref{avscore} and in greater detail in~\cite{averitec2024}.
+We use the provided \averitec{} scoring script to calculate the values for Table~\ref{tab:pipeline_scores}, using its EvalAI blackbox to obtain the test scores without seeing the gold test data.
+
+The latter experiments shown in table~\ref{tab:pipeline_scores} suggests the superiority of GPT-4o to predict the results for our pipeline with a margin.
+Even if we simplify the evidence \& label generation step by omitting the dynamic fewshot-learning (section~\ref{sec:generation}), answer-type tuning and Likert-scale confidence emulation, it still scores above others, also showing that our pipeline can be further simplified when needed.
+Regardless of the LLM in use, the results of our pipeline improve upon the \averitec{} baseline dramatically.
+
+Posterior to the original experiments and to the \averitec{} submission deadline, we also compute the pipeline results using an open-source model -- the Llama 3.1 70B~\cite{dubey2024llama3herdmodels} obtaining encouraging scores, signifying our pipeline being adaptable to work well without the need to use a blackboxed proprietary LLM.
 
 \subsection{API costs}
 During our experimentation July 2024, we have made around 9000 requests to OpenAI's \texttt{gpt-4o-2024-05-13} batch API, at a total cost of \$363.
@@ -20,7 +25,7 @@ This gives a mean cost estimate of \$0.04 per a single fact-check (or \$0.08 usi
 
 We argue that such costs make our model suitable for further experiments alongside human fact-checkers whose time spent reading through each source and proposing each evidence by themselves would certainly come at a higher price.
 
-Our successive experiments with LLaMa 3.1~\cite{meta2024llama31} show promising results as well, nearly achieving parity with GPT.
+Our successive experiments with Llama 3.1~\cite{dubey2024llama3herdmodels} show promising results as well, nearly achieving parity with GPT.
 The use of open-source models such as LLaMa or Mistral allows running our pipeline on premise, without leaking data to a third party and billing anything else than the computational resources.
 For further experiments, we are looking to integrate them into the attached Python library using VLLM~\cite{vllm}.
 
