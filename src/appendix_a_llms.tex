@@ -1,18 +1,7 @@
 %!TEX ROOT=../emnlp2023.tex
 
 \section{LLMs}
-\label{appendix_sec:llms}
-
-In this section we closely describe the exact usage of the LLMs.
-\todo{write}
-
-\subsection{Dynamic Few-shot Learning}
-To utilise the few-shot learning framework, we decided to inspire from the baseline system~\cite{averitec2024} and provide the LLMs with a system prompt containing some examples of what we expect the model to do. Our evidence generation component loads the training data, tokenises them using the NLTK word tokenizer~\cite{bird-loper-2004-nltk} and indexes the claims using BM25 Okapi retriever. When the system prompt for our claim was created, we used the previously indexed retriever and searched for the ten most similar claims from the training data. Then, we used these claims' gold questions and answers as the few-shot learning examples. Figure~\ref{lst:llm_system_prompt} shows an example of the system prompt.
-
-
-\subsection{System Prompt}
-
-
+\label{System Prompt}
 \lstset{
     language={},
     basicstyle=\ttfamily\footnotesize\linespread{0.9}, % Smaller font with less spacing
@@ -30,7 +19,6 @@ To utilise the few-shot learning framework, we decided to inspire from the basel
     frame=lines, % Add a frame around the code
     captionpos=b, % Caption at the bottom
 }
-
 \begin{figure*}
     \begin{lstlisting}[breaklines=true, language={}, frame=single]
 You are a professional fact checker, formulate up to 10 questions that cover all the facts needed to validate whether the factual statement (in User message) is true, false, uncertain or a matter of opinion. Each question has one of four answer types: Boolean, Extractive, Abstractive and Unanswerable using the provided sources.
