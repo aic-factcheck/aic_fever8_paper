@@ -6,7 +6,7 @@ We release pipeline for fact-checking claims using evidence retrieved from the w
 
 Our pipeline is a variant of the popular Retrieval-augmented Generation (RAG) scheme~\cite{rag}, making it easy to re-implement using established frameworks such as Langchain, Haystack, or our attached Python codebase for future research or to use as a baseline.
 
-This paper describes our pipeline and the decisions taken at each module, achieving a simple yet efficient RAG scheme that improves dramatically across the board over the baseline system from~\cite{averitec2024}, and scores third in the \averitec{} leaderboard, with an \averitec{} score of 0.50 as of August 2024.
+This paper describes our pipeline and the decisions taken at each module, achieving a simple yet efficient RAG scheme that improves dramatically across the board over the baseline system from~\cite{averitec2024}, and scores third in the \averitec{} leaderboard as of August 2024, with an \averitec{} score of 50.4\%.
 
 % show figures/pipeline.png
 \begin{figure}[h]
@@ -24,9 +24,9 @@ This paper describes our pipeline and the decisions taken at each module, achiev
     
     It proposes the \textbf{\averitec{} Score} -- a method of unsupervised scoring of fact-checking pipeline against this dataset using Hungarian METEOR score (matching the evidence questions (Q) or the whole evidence (Q+A)), and then counting the proportion of claims with accurate label and sound evidence at the same time among all claims (using a threshold for Hu-METEOR such as 0.25), giving an estimate on \say{how often the whole fact-checking pipeline succeeds end to end}.
 
-    The provided \textbf{baseline} is a pipeline of query generation, sentence retrieval, another question generation, pre-classification, rerankning, post-classification and label aggregation, achieving an overall \averitec{} score 0.11.  
+    The provided \textbf{baseline} is a pipeline of question generation, sentence retrieval, another question generation, pre-classification, rerankning, post-classification and label aggregation, achieving an overall \averitec{} score 0.11.  
     \item \textbf{FEVER Shared Task}~\cite{thorne-etal-2018-fact}, a predecessor to the \averitec{} worked with a similar dataset engineered on top of the enclosed domain Wikipedic data rather than real-world fact-checks -- its top-ranking solutions use a simpler pipeline of Document Retrieval, Sentence Reranking and Natural Language Inference, improving modules in a decoupled manner
     \item \textbf{Our previous research} on fact-checking pipelines~\cite{Ullrich2023,drchal2023pipelinedatasetgenerationautomated} using data similar to FEVER and \averitec{} shows significant superiority of fact-checking pipelines that \textbf{retrieve the whole documents} for the inference step, rather than out-of-context sentences
-    \item \textbf{Retrieval-Augmented Generation (RAG) for Knowledge-Intensive Tasks}~\cite{rag} takes this a step further, leveraging Large Language Model (LLM) for the task, providing it the whole text of retrieved documents (each a chunk of Wikipedia) and simply instructing it to predict the evidence and label on top of it, achieving results within 4.3\% from the FEVER state of the art by the time of its publication (December 2020) \textit{without} building a custom pipeline for the task.
+    \item \textbf{Retrieval-Augmented Generation (RAG) for Knowledge-Intensive Tasks}~\cite{rag} takes this a step further, leveraging Large Language Model (LLM) for the task, providing it the whole text of retrieved documents (each a chunk of Wikipedia) and simply instructing it to predict the evidence and label on top of it, achieving results within 4.3\% from the FEVER state of the art by the time of its publication (December 2020) \textit{without} engineering a custom pipeline for the task.
 \end{enumerate}
 
