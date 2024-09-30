@@ -23,7 +23,7 @@ Posterior to the original experiments and to the \averitec{} submission deadline
 During our experimentation July 2024, we have made around 9000 requests to OpenAI's \texttt{gpt-4o-2024-05-13} batch API, at a total cost of \$363.
 This gives a mean cost estimate of \$0.04 per a single fact-check (or \$0.08 using the API without the batch discount) that can be further reduced using cheaper models, such as \texttt{gpt-4o-2024-08-06}.
 
-We argue that such costs make our model suitable for further experiments alongside human fact-checkers whose time spent reading through each source and proposing each evidence by themselves would certainly come at a higher price.
+We argue that such costs make our model suitable for further experiments alongside human fact-checkers\review{,} whose time spent reading through each source and proposing each evidence by themselves would certainly come at a higher price.
 
 Our successive experiments with Llama 3.1~\cite{dubey2024llama3herdmodels} show promising results as well, nearly achieving parity with GPT.
 The use of open-source models such as LLaMa or Mistral allows running our pipeline on premise, without leaking data to a third party and billing anything else than the computational resources.
@@ -46,7 +46,7 @@ Individual errors were also caused by the fact that we do not use the claim date
 \subsubsection{Dataset errors}
 During the error analysis of our pipeline, we also found some errors in the \averitec{} dataset that we would like to mention. In some cases, there is a leakage of PolitiFact \review{or Factcheck.org} fact-checking articles where the claim is already fact-checked. This leads to a situation where our pipeline gives a correct verdict using the leaked evidence. However, annotators gave a different label (often Not Enough Evidence). \review{An example of this error is shown in Listing~\ref{lst:polifact_leakage} in Appendix~\ref{appendix_sec:errors}}. 
 
-Another issue we have noticed is the inconsistency in the questions and answers given by annotators. \review{Sometimes, they tend to be longer, including non-relevant information, while some are much shorter, as seen in Listing~\ref{lst:different_lengths} in Appendix~\ref{appendix_sec:errors}}. The questions are often too general, or the annotators seem to use outside knowledge. This inconsistency in the dataset \review{could lead} to a decreased performance of any models evaluated on this dataset.
+Another issue we have noticed is the inconsistency in the questions and answers given by annotators. \review{Sometimes, they tend to be longer, including non-relevant information, while some are much shorter, as seen in Listing~\ref{lst:different_lengths} in Appendix~\ref{appendix_sec:errors}}. The questions are often too general, or the annotators seem to use outside knowledge. This inconsistency in the dataset leads to a decreased performance of any models evaluated on this dataset.
 
 \subsubsection{Summary}
 Despite the abovementioned errors, the explorative analysis revealed that our pipeline consistently gives reasonable questions and answers for the claims. Most misclassified samples in those 20 data points were due to dataset errors.

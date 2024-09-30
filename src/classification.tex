@@ -33,7 +33,7 @@ We also tried tuning our ensemble weights based on a subset of the dev split, wi
 
 The last method we tried was stacking using logistic regression. However, this setup classified no labels from \textit{Not Enough Evidence} and \textit{Conflicting Evidence/Cherrypicking}, and we could not achieve reasonable results. For logistic regression, we used the scikit-learn library~\cite{scikit-learn}.
 
-We conclude that the augmentation of the pipeline from figure~\ref{fig:pipeline} with a classification module using a single NLI model or an ensemble with LLM is unneccessary, as it adds complexity and computational cost without paying off on the full pipeline performance (Table~\ref{tab:pipeline_scores}).
+We conclude that the augmentation of the pipeline from Figure~\ref{fig:pipeline} with a classification module using a single NLI model or an ensemble with LLM is unneccessary, as it adds complexity and computational cost without paying off on the full pipeline performance (Table~\ref{tab:pipeline_scores}).
 
 \subsection{Conflicting Evidence/Cherrypicking detection}
 
