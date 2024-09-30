@@ -63,13 +63,13 @@ The second and the last module on our proposed pipeline for automated fact check
 
 Our approach leverages a Large Language Model (LLM), instructing it to output both evidence and the label in a single step, as a chain of thought.
 We rely on JSON-structured output generation with source referencing using a numeric identifier, we estimate the label confidences using Likert-scale ratings.
-The full system prompt can be examined in Listing~\ref{lst:llm_system_prompt} and this section further explains the choices behind it.
+The full system prompt can be examined in Listing~\ref{lst:llm_system_prompt} \review{in Appendix~\ref{appendix_sec:system_prompt},} and this section further explains the choices behind it.
 
 \subsubsection{JSON generation}
 
 To be able to collect LLM's results programmatically, we exploit their capability to produce structured outputs, which is on rise, with datasets available for tuning~\cite{tang2024strucbenchlargelanguagemodels} and by the time of writing of this paper (August 2024), systems for strictly structured prediction are beginning to be launched by major providers~\cite{json}.
 
-Despite not having access to such structured-prediction API by the time of \averitec{} shared task, the current generation of models examined for the task (section~\ref{sec:chosen_llms}) rarely strays from the desired format if properly explained within a system prompt -- we instruct our models to output a JSON of pre-defined properties (see prompt Listing~\ref{lst:llm_system_prompt}) featuring both evidence and the veracity verdict for a given claims.
+Despite not having access to such structured-prediction API by the time of \averitec{} shared task, the current generation of models examined for the task (section~\ref{sec:chosen_llms}) rarely strays from the desired format if properly explained within a system prompt -- we instruct our models to output a JSON of pre-defined properties (see prompt Listing~\ref{lst:llm_system_prompt} \review{in Appendix~\ref{appendix_sec:system_prompt}}) featuring both evidence and the veracity verdict for a given claims.
 
 Although we implement fallbacks, less than 0.5\% of our predictions result in a parsing exception throughout experimentation, and could be easily recovered using the same prompting again, exploiting the intrinsic randomness of LLM predictions.
 
