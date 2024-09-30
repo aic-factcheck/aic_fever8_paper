@@ -37,7 +37,7 @@ In this section, we provide the results of an explorative analysis of 20 randoml
 Our pipeline tends to rely on unofficial (often newspaper) sources rather than official government sources, e.g., with a domain ending or containing \texttt{gov}. On the other hand, it seems that the annotators prefer those sources. This could be remedied by implementing a different source selection strategy, preferring those official sources. For an example, see Listing~\ref{lst:gov_error} \review{in Appendix~\ref{appendix_sec:errors}}.
 
 Another thing that could be recognised as an error is that our pipeline usually generates all ten allowed questions (upper bound given by the task~\cite{averitec2024}). The analysis of the samples shows that the last questions are often unrelated or redundant to the claim and do not contribute directly to better veracity evaluation. However, since the classification step of our pipeline is not dependent on the number of question-answer pairs, this is not a critical error.
-Listing~\ref{lst:unrelated_questions} \review{in Appendix~\ref{appendix_sec:errors}} shows an example of a datapoint with some unrelated questions.
+Listing~\ref{lst:unrelated_questions} \review{in Appendix~\ref{appendix_sec:errors}} shows an example of a \review{data point} with some unrelated questions.
 
 When the pipeline generates extractive answers, it sometimes happens that the answer is not precisely extracted from the source text but slightly modified. An example of this error can be seen in Listing~\ref{lst:extractive_error} \review{in Appendix~\ref{appendix_sec:errors}}. This error is not critical, but it could be improved in future works, e.g. using post-processing via string matching.
 
