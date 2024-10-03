@@ -5,7 +5,7 @@
 \documentclass[11pt]{article}
 
 % Remove the "review" option to generate the final version.
-\usepackage[review]{EMNLP2023}
+\usepackage{EMNLP2023}
 
 % Standard package includes
 \usepackage{times}
@@ -94,9 +94,7 @@ Prague, Czech Republic\\
 \texttt{drchajan@fel.cvut.cz} \\}
 
 \begin{document}
-{\makeatletter\acl@finalcopytrue
-  \maketitle
-}
+\maketitle
 \begin{abstract}
 This paper describes our $3^{rd}$ place submission in the \averitec{} shared task in which we attempted to address the challenge of fact-checking with evidence retrieved in the wild using a simple scheme of Retrieval-Augmented Generation (RAG) designed for the task, leveraging the predictive power of Large Language Models.
 We release our codebase\footnote{\url{https://github.com/aic-factcheck/aic_averitec}}, and explain its two modules -- the Retriever and the Evidence \& Label generator -- in detail, justifying their features such as MMR-reranking and Likert-scale confidence estimation.
