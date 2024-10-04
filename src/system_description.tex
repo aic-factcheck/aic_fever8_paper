@@ -2,7 +2,7 @@
 
 \section{System description}
 \label{sec:system}
-\review{Our system is designed to be as simple as possible, and its core idea is using a straightforward RAG pipeline without engineering extra steps, customizing only the retrieval step and LLM prompting } (Listing~\ref{lst:llm_system_prompt} \review{in Appendix~\ref{appendix_sec:system_prompt}}).
+\review{Our system design prioritizes simplicity, and its core idea is using a straightforward RAG pipeline without engineering extra steps, customizing only the retrieval step and LLM prompting } (Listing~\ref{lst:llm_system_prompt} \review{in Appendix~\ref{appendix_sec:system_prompt}}).
 Despite that, this section describes and justifies our decisions taken at each step, our additions to the naive version of RAG modules to tune them for the specific task of fact-checking, and their impact on the system performance.
 
 \subsection{Retrieval module}
@@ -13,7 +13,7 @@ To ease comparison with the baseline and other systems designed for the task, ou
 
 \subsubsection{Knowledge stores}
 Each claim's knowledge store contains pre-scraped results for various search queries that can be derived from the claim using human annotation or generative models.
-The knowledge stores used with ours as well as the baseline system can be downloaded from the \averitec{}  dataset page\footnote{\url{https://fever.ai/dataset/averitec.html}}, containing about 1000 pre-scraped \textit{documents}\footnote{\label{devsetnote} The numbers are orientational and were computed on knowledge stores provided for the \averitec{}  dev set.}, each consisting of $28$ sentences at median\footnoteref{devsetnote}, albeit varying wildly between documents.
+The knowledge stores used with ours as well as the baseline system can be downloaded from the \averitec{}  dataset page\footnote{\url{https://fever.ai/dataset/averitec.html}}, containing about 1000 pre-scraped \textit{documents}\footnote{\label{devsetnote}The numbers are orientational and were computed on knowledge stores provided for the \averitec{}  dev set.}, each consisting of $28$ sentences at median\footnoteref{devsetnote}, albeit varying wildly between documents.
 The methods used for generating the knowledge stores are explained in more detail by~\citet{averitec2024}.
 %To use our system in the wild, this knowledge store can be emulated using a search API such as SerpApi, or even a large document collection such as Common Crawl pruned down to similar orders of magnitude using a cheap retrieval method and the claim as a search query.
 
@@ -35,7 +35,7 @@ Upon further examination, these are typically PDF documents of legislature, docu
 
 This workflow inspires the use of \textit{document chunk retrieval} as used in~\cite{rag}, commonly paired with RAG.
 We partition each document into sets of its sentences of combined length of $N$ characters at most.
-To take advantage of the full input size of the vector embedding model we use for semantical search, we set our bound $N=512*4=2048$, \review{where 512 is} the input dimension of common embedding models, 4 often being used as a rule-of-thumb number of characters per token for US English in modern tokenizers~\cite{tokens}.
+To take advantage of the full input size of the vector embedding model we use for semantical search, we \review{arbitrarily} set our bound $N=512*4=2048$, \review{where 512 is} the input dimension of common embedding models, 4 often being used as a rule-of-thumb number of characters per token for US English in modern tokenizers~\cite{tokens}.
 
 Importantly, each chunk is  assigned metadata -- the source URL, as well as the full text of the next and previous chunk within the same document.
 This way, chunks can be presented to the LLM along with their original context in the generation module, where the length constraint is much less of an issue than in vector embedding.
@@ -73,7 +73,7 @@ To be able to collect LLM's results programmatically, we exploit their capabilit
 
 Despite not having access to such structured-prediction API by the time of \averitec{} shared task, the current generation of models examined for the task (section~\ref{sec:chosen_llms}) rarely strays from the desired format if properly explained within a system prompt -- we instruct our models to output a JSON of pre-defined properties (see prompt Listing~\ref{lst:llm_system_prompt} \review{in Appendix~\ref{appendix_sec:system_prompt}}) featuring both evidence and the veracity verdict for a given claims.
 
-Although we implement fallbacks, less than 0.5\% of our predictions result in a parsing exception throughout experimentation, and could be easily recovered using the same prompting again, exploiting the intrinsic randomness of LLM predictions.
+Although we implement fallbacks, less than 0.5\% of our predictions \review{threw} a parsing exception throughout experimentation, and could be easily recovered using the same prompting again, exploiting the intrinsic randomness of LLM predictions.
 
 \subsubsection{Chain-of-thought prompting}
 While JSON dictionary should be order-invariant, we can actually exploit the order of outputs in our output structure to make LLMS like GPT-4o output better results~\cite{cot}.
@@ -81,7 +81,7 @@ This is commonly referred to as the \say{chain-of-thought} prompting -- if we in
 
 \subsubsection{Source referring}
 To be able to backtrack the generated evidence to the urls of the used sources, we simply augment each question-answer pair with a source field.
-We assign a 1-based index to each of the sources to facilitate tokenization and prompt the LLM to refer it as the source ID with each evidence it generates.
+We assign a 1-based index\footnote{\review{We chose the 1-based source indexing to exploit the source-referring data in LLM train set such as Wikipedia, where source numbers start with 1. The improvement in quality over 0-based indexing was not experimentally tested.}}  to each of the sources to facilitate tokenization and prompt the LLM to refer it as the source ID with each evidence it generates.
 While hallucination can not be fully prevented, it is less common than it may appear -- with RAG gaining popularity, the models are being trained to cite their sources using special citation tokens~\cite{menick2022teachinglanguagemodelssupport}, not dissimilarly to our proposal.
 
 \subsubsection{Dynamic few-shot learning}
