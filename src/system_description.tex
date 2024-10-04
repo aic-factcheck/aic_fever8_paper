@@ -2,14 +2,14 @@
 
 \section{System description}
 \label{sec:system}
-Our system is designed to be simple and its core could be described as simply a RAG pipeline with customized retriever and LLM prompting (Listing~\ref{lst:llm_system_prompt} \review{in Appendix~\ref{appendix_sec:system_prompt}}).
+\review{Our system is designed to be as simple as possible, and its core idea is using a straightforward RAG pipeline without engineering extra steps, customizing only the retrieval step and LLM prompting } (Listing~\ref{lst:llm_system_prompt} \review{in Appendix~\ref{appendix_sec:system_prompt}}).
 Despite that, this section describes and justifies our decisions taken at each step, our additions to the naive version of RAG modules to tune them for the specific task of fact-checking, and their impact on the system performance.
 
 \subsection{Retrieval module}
 \label{retrieval}
 To ease comparison with the baseline and other systems designed for the task, our system does not use direct internet/search-engine access for its retrieval, but an \averitec{} \textit{knowledge store} provided alongside each claim.
 
-To use our pipeline in the wild, our retrieval module is decoupled from the rest of the pipeline and can be swapped out in favour of an internet search module such as SerpApi\footnote{\url{https://serpapi.com/}} as a whole, or it can be used on top of a knowledge store emulated using search API or a cheap on-premise search over large crawled corpora such as CommonCrawl\footnote{\url{https://commoncrawl.org/}}.
+\review{To use our pipeline in the wild, our retrieval module is decoupled from the rest of the pipeline and can be swapped out in favour of an internet search module such as SerpApi\footnote{\url{https://serpapi.com/}} as a whole, or it can be used on top of a knowledge store emulated using large crawled corpora such as CommonCrawl\footnote{\url{https://commoncrawl.org/}} and a pre-retrieval module.}
 
 \subsubsection{Knowledge stores}
 Each claim's knowledge store contains pre-scraped results for various search queries that can be derived from the claim using human annotation or generative models.
@@ -26,7 +26,7 @@ It takes less time to embed the whole knowledge store into vectors than to match
 
 For our proof of concept, we explore the MTEB~\cite{muennighoff-etal-2023-mteb} benchmark leaderboard, looking for a reasonably-sized open-source embedding model, ultimately picking Mixedbread's mxbai-large-v1~\cite{li-li-2024-aoe,emb2024mxbai} optimized for the cosine objective fitting our inteded use.
 
-To reduce querying time at a reasonable exactness tradeoff, we use Faiss~\cite{douze2024faiss,johnson2019billion} index to store our vectors, allowing us to only precompute semantical representation once, making the retriever respond rapidly in empirical experiments, allowing a very agile prototyping of novel methods to be used.
+\review{To reduce querying time at a reasonable exactness tradeoff, we use Faiss index~\cite{douze2024faiss,johnson2019billion} to store our vectors, allowing us to only precompute semantical representation once, making the retriever respond rapidly in empirical experiments, allowing a very agile prototyping of novel methods to be used.}
 
 \subsubsection{Chunking with added context}
 Our initial experiments with the whole \averitec{}  documents for the Document Retrieval step have revealed a significant weakness -- while most documents fit within the input size of the embedding model, outliers are common, often with \textit{hundreds of thousands} characters, exceeding the 512 input tokens with little to no coverage of their content.
@@ -48,12 +48,14 @@ As each of the thousands of claims has its own knowledge store, each of possibly
 This yields a reasonably-sized document store for embedding each chunk into a vector, taking an average of 40 s to compute and store using the method described in Section~\ref{sec:knn} for each dev-claim using our Tesla V100 GPU.
 
 This allows a quick and agile production of vectorstores for further querying and experimentation, motivated by the \averitec{}  test data being published just several days before the announced submission deadline.
-The pruning also keeps the resource intensity moderate for real-world applications -- if time is not of the essence, the step can be omitted.
+\review{The pruning also keeps the resource intensity moderate for real-world applications.
+However, if time is not of the essence, the step can be omitted.}
 
 \subsubsection{Diversifying sources: MMR}
-While the embedding search based of the entire claim rather than generating its \say{search queries} introduces less noise and captures the semantics of the whole claim, it is, however, prone to redundancy among search results, which we address using a reranking by the results' Maximal Marginal Relevance (MMR)~\cite{carbonell-mmr}, a metric popular for the RAG task, which maximizes the search results' score computed as (for $D_i\in P$)
+\review{Our choice of embedding search based on the entire claim rather than generating \say{search queries} introduces less noise and captures the semantics of the whole claim.
+It is, however, prone to redundancy among search results, which we address using a reranking by the results' Maximal Marginal Relevance (MMR)~\cite{carbonell-mmr}, a metric popular for the RAG task, which maximizes the search results' score computed as (for $D_i\in P$)
 $$\lambda \cdot \mathrm{Sim}(D_i, Q) - (1-\lambda) \cdot \max_{D_j \in S} \mathrm{Sim}(D_i, D_j)$$
-$Sim$ denoting the cosine-similarity between embeddings, $Q$ being the search query, and $P$ the pre-fetched set of documents (by a search which simply maximizes their $Sim$ to $Q$), forming $S$ as the final search result, by adding each $D_i$ as MMR-argmax one by one, until reaching its desired size.
+$Sim$ denoting the cosine-similarity between embeddings, $Q$ being the search query, and $P$ the pre-fetched set of documents (by a search which simply maximizes their $Sim$ to $Q$), forming $S$ as the final search result, by adding each $D_i$ as MMR-argmax one by one, until reaching its desired size.}
 
 In our system, we set $\lambda=0.75$ to favour relevancy rather than diversity, $|S|=10$ and $|P| = 40$, obtaining a set of diverse sources relevant to each claim at a fraction of cost and complexity of a query-generation driven retrieval, such as that used in~\cite{averitec2024}.
 
@@ -67,7 +69,7 @@ The full system prompt can be examined in Listing~\ref{lst:llm_system_prompt} \r
 
 \subsubsection{JSON generation}
 
-To be able to collect LLM's results programmatically, we exploit their capability to produce structured outputs, which is on rise, with datasets available for tuning~\cite{tang2024strucbenchlargelanguagemodels} and by the time of writing of this paper (August 2024), systems for strictly structured prediction are beginning to be launched by major providers~\cite{json}.
+To be able to collect LLM's results programmatically, we exploit their capability to produce structured outputs, which is on \review{the} rise, with datasets available for tuning~\cite{tang2024strucbenchlargelanguagemodels} and by the time of writing of this paper (August 2024), systems for strictly structured prediction are beginning to be launched by major providers~\cite{json}.
 
 Despite not having access to such structured-prediction API by the time of \averitec{} shared task, the current generation of models examined for the task (section~\ref{sec:chosen_llms}) rarely strays from the desired format if properly explained within a system prompt -- we instruct our models to output a JSON of pre-defined properties (see prompt Listing~\ref{lst:llm_system_prompt} \review{in Appendix~\ref{appendix_sec:system_prompt}}) featuring both evidence and the veracity verdict for a given claims.
 
