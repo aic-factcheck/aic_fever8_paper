@@ -35,7 +35,7 @@ Upon further examination, these are typically PDF documents of legislature, docu
 
 This workflow inspires the use of \textit{document chunk retrieval} as used in~\cite{rag}, commonly paired with RAG.
 We partition each document into sets of its sentences of combined length of $N$ characters at most.
-To take advantage of the full input size of the vector embedding model we use for semantical search, we set our bound $N=512*4=2048$, 512 being the input dimension of common embedding models, 4 often being used as a rule-of-thumb number of characters per token for US English in modern tokenizers~\cite{tokens}.
+To take advantage of the full input size of the vector embedding model we use for semantical search, we set our bound $N=512*4=2048$, \review{where 512 is} the input dimension of common embedding models, 4 often being used as a rule-of-thumb number of characters per token for US English in modern tokenizers~\cite{tokens}.
 
 Importantly, each chunk is  assigned metadata -- the source URL, as well as the full text of the next and previous chunk within the same document.
 This way, chunks can be presented to the LLM along with their original context in the generation module, where the length constraint is much less of an issue than in vector embedding.
@@ -76,7 +76,7 @@ Despite not having access to such structured-prediction API by the time of \aver
 Although we implement fallbacks, less than 0.5\% of our predictions result in a parsing exception throughout experimentation, and could be easily recovered using the same prompting again, exploiting the intrinsic randomness of LLM predictions.
 
 \subsubsection{Chain-of-thought prompting}
-While JSON dictionary should be order-invariant, we can actually exploit the order of outputs in our output structure to make LLMS like GPT-4o output better results.~\cite{cot}
+While JSON dictionary should be order-invariant, we can actually exploit the order of outputs in our output structure to make LLMS like GPT-4o output better results~\cite{cot}.
 This is commonly referred to as the \say{chain-of-thought} prompting -- if we instruct the autoregressive LLM to first output the evidence (question, then answer), then a set of all labels with their confidence ratings (see section~\ref{likert}) and only then the final verdict, its prediction is both cheaper as opposed to implementing an extra module, as well as more reliable, as it must attend to all of the intermediate steps as well.
 
 \subsubsection{Source referring}
