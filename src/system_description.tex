@@ -3,7 +3,7 @@
 \section{System description}
 \label{sec:system}
 
-Our system is a trivial adaptation of the AIC CTU Averitec system designed one year prior, published in~\citealt{ullrich-etal-2024-aic}.
+Our system is a straightforward adaptation of the AIC CTU Averitec system designed one year prior, published in~\citealt{ullrich-etal-2024-aic}.
 The cited paper describes the system in detail, with ablation studies and justifications of each step.
 Let us summarize the pipeline:
 
@@ -12,17 +12,18 @@ Let us summarize the pipeline:
 \begin{enumerate}[label=\arabic*.]  % Second-level: 1., 2., 3.
     \item Provided \textbf{knowledge store} \cite{averitec2024} is split into chunks of specified maximum length, each marked with metadata of its URL and the full texts of the chunk before and after.
     \item The chunks are then embedded into their vector representations, using only the chunk texts and no metadata.
-    \item Out of all chunk representations, \textbf{vector store} is produced for each claim, and saved as a vector database.
+    \item Out of all chunk embeddings, a \textbf{vector store} is produced for each claim to be stored as a vector database.
 \end{enumerate}
 \item Retrieval module
 \begin{enumerate}[label=\arabic*.]  % Second-level: 1., 2., 3.
     \item The \textbf{Claim} is embedded into its vector representation using the same model used in i.2.
     \item $k$ nearest neighbours are then retrieved from the vector store, along with their \textbf{chunk embeddings}
-    \item The chunk embeddings are then re-ranked using the Maximal Marginal Relevance (MMR) method~\cite{carbonell-mmr}, maximizing the diversity of the retrieval results, outputing $l$~\textbf{sources} for the claim ($l<k$), augmenting each with its context before, after, and the text of its URL.
+    \item The chunk embeddings are then re-ranked using the Maximal Marginal Relevance (MMR) method~\cite{carbonell-mmr}, maximizing the embedding distances between retrieval results while minimizing their distance to the claim.
+    Ultimately, we output a subset of $l$~diverse \textbf{sources} for the claim ($l<k$), augmenting each with its context before, after, and the text of its URL.
 \end{enumerate}
-\item Evidence \& label generator
+\item Evidence \& label generation module
 \begin{enumerate}[label=\arabic*.]  % Second-level: 1., 2., 3.
-    \item The text of all $l$ sources, JSON formatting instruction and a couple of few-shot evidence generation examples picked from Averitec train set using sparse retrieval method are passed to the LLM as a system message.
+    \item We instruct a Large Language Model (LLM) to produce Question-Answer pairs required to fact-check given claim based on the provided sources, and predict its veracity verdict in a single output. We pass it the texts of all $l$ sources, and several few-shot QA-pair generation examples picked from Averitec train set using BM25. The whole instruction is serialized into a system prompt and the format we used can be seen in Appendix~\ref{appendix_sec:system_prompt}.
     \item \textbf{Claim} is then passed to the LLM as a user message.
     \item The \textbf{evidence} is produced by the LLM, along with the Likert-scale scores for each possible \textbf{veracity verdict} in a single prediction, performing a chain of thought. 
     \item The LLM output is parsed, and the verdict with the highest score is chosen for the claim.
