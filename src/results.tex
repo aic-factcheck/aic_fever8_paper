@@ -2,4 +2,14 @@
 
 \section{Results and analysis}
 \label{sec:results}
+\label{nothink}
 
+\subsection{Why does the system perform well?}
+\label{sec:why}
+One thing we would like to address with this paper is why does our system outperform the \averitec{} baseline and even the other systems submitted to \averitec{} shared task despite the simplicity of its design (Figure~\ref{fig:pipeline}) which boils down to a straightforward case of retrieval-augmented generation (RAG).
+
+The main reason, in our experience, is the large \textbf{context size} we opt for -- while even the \averitec{} baseline processes the claims and sources in a manner more sophisticated than we do, it processes the knowledge store on a \textit{sentence} level, reducing the amount of information passed to the LLM as opposed to working with \textit{documents} as a whole, which is the strategy our system approximates.
+
+Put simply, despite our integration of LLM into the pipeline being rather vanilla, providing the model with retrieved sources of combined length of around 60K characters\footnote{In other words, around 33 standard pages. This number follows from our parameter choices in Section~\ref{sec:choices}: 10 chunks of $\sim2048$ characters and additional $\sim4096$ characters of context each.} yields highly competitive results, leveraging its own trained mechanisms of context processing.
+
+Our other advantages may have been using a very recent model, Qwen3~\cite{yang2025qwen3technicalreport}, which naturally has a slightly higher leakage of 2025 claims into its train set than older models, and outperforms the previous LLM generations at long sequence processing. Furthermore, our pipeline design only uses a single LLM call per claim, meaning we could use the generously-sized 14B variant of Qwen3 and still match the time limit with Nvidia A10 and 20GB GRAM.
