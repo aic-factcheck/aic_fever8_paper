@@ -35,7 +35,8 @@
 %listings
 \usepackage{listings}
 \usepackage{dirtytalk}
-
+\usepackage{enumitem}
+\usepackage{graphicx}
 %review macros
 \usepackage{xcolor}
 \newcommand{\review}[1]{{\color{black}#1}}
@@ -45,6 +46,7 @@
 % Commands
 \newcommand{\todo}[1]{{\color{red}\colorbox{yellow}{\textbf{TODO: }}#1}}
 \newcommand{\averitec}{FEVER~8}
+\newcommand{\evr}{Ev\textsuperscript{2}R}
 \newcommand{\supp}{Supported}
 \newcommand{\reff}{Refuted}
 \newcommand{\nei}{Not enough evidence}
@@ -98,7 +100,7 @@ Prague, Czech Republic\\
   \maketitle
 }
 \begin{abstract}
-In this paper, we present our fact-checking pipeline which has scored first in the 8th FEVER shared task. Our fact-checking system is a simple two-step RAG pipeline based on our last year's submission. We show how the pipeline can be redeployed on-premise, achieving state-of-the-art fact-checking performance (in sense of EV2R test-score), even under the constraint of a single NVidia A10 GPU and 60s running time per claim.
+In this paper, we present our fact-checking pipeline which has scored first in the \averitec{} shared task. Our fact-checking system is a simple two-step RAG pipeline based on our last year's submission. We show how the pipeline can be redeployed on-premise, achieving state-of-the-art fact-checking performance (in sense of \evr{} test-score), even under the constraint of a single NVidia A10 GPU and 60s running time per claim.
 
 \end{abstract}
 
@@ -113,7 +115,7 @@ In this paper, we present our fact-checking pipeline which has scored first in t
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section*{Limitations}
-The evaluation of our fact-checking pipeline is limited to the English language and the \averitec{} dataset~\cite{averitec2024}. This is a severe limitation as the pipeline when deployed in a real-world application, would encounter other languages and forms of claims not covered by the used dataset.
+The evaluation of our fact-checking pipeline is limited to the English language and the Averitec dataset~\cite{averitec2024}. This is a severe limitation as the pipeline when deployed in a real-world application, would encounter other languages and forms of claims not covered by the used dataset.
 
 %Another limitation is that we are using a large language model. Because of that, future usage is limited to using an API of a provider of LLMs or having access to a large amount of computational resources, which comes at significant costs. Using APIs also brings the disadvantage of sending data to a third party, which might be a security risk in some critical applications. LLM usage also has an undeniable environmental impact because of the vast amount of electricity and resources used.
 
@@ -127,8 +129,6 @@ Another important statement is that our pipeline was in its current form explici
 The carbon costs of the training and running of our pipeline are considerable and should be taken into account given the urgency of climate change. At the time of deployment, the pipeline should be run on the smallest possible model that can still provide reliable results, and the latest hardware and software optimisations should be used to minimise the carbon footprint.
 
 \section*{Acknowledgements}
-We would like to thank Bryce Aaron from UNC for exploring the problems of search query generation and pinpointing claims of underrepresented labels using numerical methods that did not make it into our final pipeline but gave us a frame for comparison. 
-
 This research was co-financed with state support from the Technology Agency of the Czech Republic and the Ministry of Industry and Trade of the Czech Republic under the TREND Programme, project FW10010200.
 The access to the computational infrastructure of the OP VVV funded project CZ.02.1.01/0.0/0.0/16\_019/0000765 ``Research Center for Informatics'' is also gratefully acknowledged.
 We would like to thank to \mbox{OpenAI} for providing free credit for their paid API via Researcher Access Program\footnote{\review{\url{https://openai.com/form/researcher-access-program/}}}.

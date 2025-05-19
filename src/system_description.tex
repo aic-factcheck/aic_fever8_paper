@@ -2,3 +2,48 @@
 
 \section{System description}
 \label{sec:system}
+
+Our system is a trivial adaptation of the AIC CTU Averitec system designed one year prior, published in~\citealt{ullrich-etal-2024-aic}.
+The cited paper describes the system in detail, with ablation studies and justifications of each step.
+Let us summarize the pipeline:
+
+\begin{enumerate}[label=\roman*.]  % First-level: i., ii., iii.
+\item Precomputation module
+\begin{enumerate}[label=\arabic*.]  % Second-level: 1., 2., 3.
+    \item Provided \textbf{knowledge store} \cite{averitec2024} is split into chunks of specified maximum length, each marked with metadata of its URL and the full texts of the chunk before and after.
+    \item The chunks are then embedded into their vector representations, using only the chunk texts and no metadata.
+    \item Out of all chunk representations, \textbf{vector store} is produced for each claim, and saved as a vector database.
+\end{enumerate}
+\item Retrieval module
+\begin{enumerate}[label=\arabic*.]  % Second-level: 1., 2., 3.
+    \item The \textbf{Claim} is embedded into its vector representation using the same model used in i.2.
+    \item $k$ nearest neighbours are then retrieved from the vector store, along with their \textbf{chunk embeddings}
+    \item The chunk embeddings are then re-ranked using the Maximal Marginal Relevance (MMR) method~\cite{carbonell-mmr}, maximizing the diversity of the retrieval results, outputing $l$~\textbf{sources} for the claim ($l<k$), augmenting each with its context before, after, and the text of its URL.
+\end{enumerate}
+\item Evidence \& label generator
+\begin{enumerate}[label=\arabic*.]  % Second-level: 1., 2., 3.
+    \item The text of all $l$ sources, JSON formatting instruction and a couple of few-shot evidence generation examples picked from Averitec train set using sparse retrieval method are passed to the LLM as a system message.
+    \item \textbf{Claim} is then passed to the LLM as a user message.
+    \item The \textbf{evidence} is produced by the LLM, along with the Likert-scale scores for each possible \textbf{veracity verdict} in a single prediction, performing a chain of thought. 
+    \item The LLM output is parsed, and the verdict with the highest score is chosen for the claim.
+\end{enumerate}
+\end{enumerate}
+
+
+\subsection{Model and parameter choices}
+To produce our submission in the \averitec{} shared task, the following choices were made to deploy the pipeline from section~\ref{sec:system}:
+
+\texttt{mxbai-embed-large-v1}~\cite{li-li-2024-aoe,emb2024mxbai} is used for the vector embeddings, and the maximum chunk size is set to 2048 characters, considering its input size of 512 tokens and a rule-of-thumb coeffitient of 4 characters per token to exploit the full embedding input size and produce the smallest possible vector store size without neglecting a significant proportion of knowledge store text.
+
+\texttt{FAISS}~\cite{douze2024faiss,johnson2019billion} index is used as the vector database engine, due to its simplicity of usage, exact search feature and quick retrieval times (sub-second for a single \averitec{} test claim).
+
+$l=10, k=40, \lambda=0.75$ are the parameters we use for the MMR reranking, meaning that 40 chunks are retrieved, 10 sources are to yielded, and the tradeoff between their similarity to the claim and their diversity is 3:1 in favour of the source similarity to the claim (explained in more detail in~\citealt{ullrich-etal-2024-aic}). 
+
+\texttt{Ollama} wrapper around \texttt{llama.cpp} is the LLM engine we use to deploy LLMs within the \averitec~test environment due to its robustness and ease of deployment.
+
+\texttt{Qwen3-14b}~\cite{yang2025qwen3technicalreport} is the LLM we use to produce the evidence and labels, we also let it generate its own \texttt{<think>} sequences, although further experimentation (\todo{refer}) suggest it could perform even better with its own thinking features disabled, using only the texts of evidence it produces for its chain of thought.
+
+
+\section{Why does it score high?}
+\label{sec:why}
+Upon examining the \averitec{} baseline 
