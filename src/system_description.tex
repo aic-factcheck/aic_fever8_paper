@@ -43,4 +43,4 @@ $l=10, k=40, \lambda=0.75$ are the parameters we use for the MMR reranking, mean
 
 \texttt{Ollama} wrapper around \texttt{llama.cpp} is the LLM engine we use to deploy LLMs within the \averitec~test environment due to its robustness and ease of deployment.
 
-\texttt{Qwen3-14b}~\cite{yang2025qwen3technicalreport} is the LLM we use to produce the evidence and labels, we also let it generate its own \texttt{<think>} sequences, although further experimentation (Table~\ref{tab:ablation}) suggests that the thinking tokens may not justify the costs of their prediction, as they seem to perform on par with using only the evidence \& label LLM outputs for a chain of thought.
+\texttt{Qwen3-14b}~\cite{yang2025qwen3technicalreport} is the LLM we use to produce the evidence and labels, we also let it generate its own \texttt{<think>} sequences, although further experimentation (Table~\ref{tab:ablation}) suggests that the thinking tokens may not justify the costs of their prediction, as they seem to perform on par with using only the evidence \& label LLM outputs for its chain of thought.
