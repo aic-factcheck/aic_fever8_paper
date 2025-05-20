@@ -5,17 +5,24 @@
 
 \section{Introduction}
 \label{sec:introduction}
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Nisl tincidunt eget nullam non. Quis hendrerit dolor magna eget est lorem ipsum dolor sit. Volutpat odio facilisis mauris sit amet massa. Commodo odio aenean sed adipiscing diam donec adipiscing tristique. Mi eget mauris pharetra et. Non tellus orci ac auctor augue. Elit at imperdiet dui accumsan sit. Ornare arcu dui vivamus arcu felis. Egestas integer eget aliquet nibh praesent. In hac habitasse platea dictumst quisque sagittis purus. Pulvinar elementum integer enim neque volutpat ac.
+In 2024, Automated Verification of Textual Claims (AVeriTeC) shared task~\cite{schlichtkrull-etal-2024-automated} shown that the fact-checking of real-world claims like those from Politifact, AfricaCheck, etc., can be automated to a significant extent, with pipelines accessing Large Language Models (LLMs) to produce the evidence and veracity verdicts for previously unseen claims instead of a human.
+Almost each competitive AVeriTeC shared-task system, however, relied on a proprietary LLM like GPT-4o~\cite{rothermel-etal-2024-infact,ullrich-etal-2024-aic} or an open-weights model with high tens of billions of parameters~\cite{yoon-etal-2024-hero}.
+This raised a concern -- can the fact-checking process be automated in a way accessible to masses, or is its quality conditioned by the business-owned blackbox models or access to prohibitive computational resources?
 
-Senectus et netus et malesuada. Nunc pulvinar sapien et ligula ullamcorper malesuada proin. Neque convallis a cras semper auctor. Libero id faucibus nisl tincidunt eget. Leo a diam sollicitudin tempor id. A lacus vestibulum sed arcu non odio euismod lacinia. In tellus integer feugiat scelerisque. Feugiat in fermentum posuere urna nec tincidunt praesent. Porttitor rhoncus dolor purus non enim praesent selementum facilisis. Nisi scelerisque eu ultrices vitae auctor eu augue ut lectus. Ipsum faucibus vitae aliquet nec ullamcorper sit amet risus. Et malesuada fames ac turpis egestas sed. Sit amet nisl suscipit adipiscing bibendum est ultricies. Arcu ac tortor dignissim convallis aenean et tortor at. Pretium viverra suspendisse potenti nullam ac tortor vitae purus. 
-\vspace{-1em}
+In this year's~\averitec{} shared task, the challenge is to match the quality of AVeriTeC systems with ones that only use open-weights models, constrained time of 60 seconds per claim on average, and a fixed compute of a single 20GB A10 GPU.
+
+Our AIC CTU system (Figure~\ref{fig:pipeline}), adapted for \averitec{} from our last year submission, tops its test-leaderboard (Table~\ref{tab:leaderboard}) with a simple Retrieval-augmented Generation (RAG) scheme, using a locally hosted (Ollama) instance of Qwen3 LLM with 14B params, leveraging the sheer context length modern day LLMs can process.
+
+%\vspace{-.5em}
 \begin{minipage}{\linewidth}
     \centering
     \includegraphics[width=\linewidth]{figures/pipeline.pdf}
     \captionof{figure}{Our refreshed fact-checking pipeline used in CTU AIC FEVER 8 submission, adapted from~\citealt{ullrich-etal-2024-aic}.}
     \label{fig:pipeline}
 \end{minipage}
-\vspace{1em}
+
+This paper introduces our system, discusses its design choices and how do they account on the score.
+We suggest our system as the new strong baseline -- simple at core, competitive results -- providing the code and reproduction advice.
 
 %\section{Related work}
 \label{sec:relwork}

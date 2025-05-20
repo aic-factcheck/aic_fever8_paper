@@ -35,22 +35,22 @@
 \begin{table}
 \centering
 \begin{tabular}{l
->{\centering\arraybackslash}p{1.1cm} 
->{\centering\arraybackslash}p{1.1cm} 
->{\centering\arraybackslash}p{1.1cm}}
-\textbf{System} &
+>{\centering\arraybackslash}p{1cm} 
+>{\centering\arraybackslash}p{1cm} 
+>{\centering\arraybackslash}p{1cm}}
+\textbf{LLM} &
 \rotatebox{70}{\textbf{Q only} {\footnotesize{(\evr)}}} &
 \rotatebox{70}{\textbf{Q + A} {\footnotesize{(\evr)}}} &
 \rotatebox{70}{\textbf{\footnotesize{new AVeriTeC score}}} \\
 \hline
+gpt4o (2024)      & 0.30 & 0.58 & 0.40 \\
 llama70b (2024)   & 0.37 & 0.54 & 0.39 \\
-gpt4o (2024)      & 0.36 & 0.54 & 0.37 \\
-qwen3-nothink     & 0.29 & 0.59 & 0.41 \\
-qwen3-think       & 0.25 & 0.55 & 0.36 \\
+qwen3:14B\footnotesize{-no\_think}     & 0.29 & 0.59 & 0.41 \\
+qwen3:14B+think       & 0.20 & 0.59 & 0.42 \\
 \hline
 \end{tabular}
-\caption{Ablation study on LLM choice and \texttt{<think>}-tokens impact on \averitec{} score. Pipeline design (Figure~\ref{fig:pipeline}), retrieval results, system and user prompts are fixed to be the same for each model. Evaluated using an on-premise~\evr{} scorer with Ollama-hosted Llama3.3-70B as a judge.}
-\label{tab:averitec-ablation}
+\caption{Ablation study on LLM choice and \texttt{<think>}-tokens impact on \averitec{} dev-score. Pipeline design (Figure~\ref{fig:pipeline}), retrieval results, system and user prompts are fixed. Evaluated using an on-premise~\evr{} scorer with Ollama-hosted Llama3.3-70B as a judge.}
+\label{tab:ablation}
 \end{table}
 
 \subsection{Why does the system perform well?}

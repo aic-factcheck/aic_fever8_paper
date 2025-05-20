@@ -5,12 +5,12 @@
 
 Our system is a straightforward adaptation of the AIC CTU Averitec system designed one year prior, published in~\citealt{ullrich-etal-2024-aic}.
 The cited paper describes the system in detail, with ablation studies and justifications of each step.
-Let us summarize the pipeline:
+Our pipeline, depicted in Figure~\ref{fig:pipeline}, consists of precomputation, retrieval, and generation modules:
 
 \begin{enumerate}[label=\roman*.]  % First-level: i., ii., iii.
 \item Precomputation module
 \begin{enumerate}[label=\arabic*.]  % Second-level: 1., 2., 3.
-    \item The provided \textbf{knowledge store} \cite{averitec2024} is split into chunks of specified maximum length, each marked with metadata of its URL and the full texts of the chunk before and after.
+    \item The provided AVeriTeC \textbf{knowledge store} \cite{averitec2024} is split into chunks of specified maximum length, each marked with metadata of its URL and the full texts of the chunk before and after.
     \item The chunks are then embedded into their vector representations, using only the chunk texts and no metadata.
     \item Out of all chunk embeddings, a \textbf{vector store} is produced for each claim to be stored as a vector database.
 \end{enumerate}
@@ -30,7 +30,7 @@ Let us summarize the pipeline:
 \end{enumerate}
 \end{enumerate}
 
-
+The main differences between this year's AIC \averitec{} system, opposed to last year's AIC AVeriTeC system, are the omission of knowledge store pruning in the precomputation step\footnote{The precomputed vector stores were required to be independent on claim text in \averitec{}.}, and, importantly, the choice of LLM.
 \subsection{Model and parameter choices}
 \label{sec:choices}
 To produce our submission in the \averitec{} shared task, the following choices were made to deploy the pipeline from section~\ref{sec:system}:
