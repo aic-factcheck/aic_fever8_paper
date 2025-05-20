@@ -97,7 +97,7 @@ Prague, Czech Republic\\
   \maketitle
 }
 \begin{abstract}
-In this paper, we present our fact-checking pipeline which has scored first in the \averitec{} shared task. Our fact-checking system is a simple two-step RAG pipeline based on our last year's submission. We show how the pipeline can be redeployed on-premise, achieving state-of-the-art fact-checking performance (in sense of \evr{} test-score), even under the constraint of a single NVidia A10 GPU and 60s running time per claim.
+In this paper, we present our fact-checking pipeline which has scored first in \averitec{} shared task. Our fact-checking system is a simple two-step RAG pipeline based on our last year's submission. We show how the pipeline can be redeployed on-premise, achieving state-of-the-art fact-checking performance (in sense of \evr{} test-score), even under the constraint of a single Nvidia A10 GPU, 23GB of graphical memory and 60s running time per claim.
 
 \end{abstract}
 
@@ -113,19 +113,11 @@ In this paper, we present our fact-checking pipeline which has scored first in t
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section*{Limitations}
-The evaluation of our fact-checking pipeline is limited to the English language and the Averitec dataset~\cite{averitec2024}. This is a severe limitation as the pipeline when deployed in a real-world application, would encounter other languages and forms of claims not covered by the used dataset.
-
-%Another limitation is that we are using a large language model. Because of that, future usage is limited to using an API of a provider of LLMs or having access to a large amount of computational resources, which comes at significant costs. Using APIs also brings the disadvantage of sending data to a third party, which might be a security risk in some critical applications. LLM usage also has an undeniable environmental impact because of the vast amount of electricity and resources used.
-
-The reliability of the generated text is a limitation that is often linked to LLMs. LLMs sometimes hallucinate (in our case, it would mean using sources other than those given in the system prompt), and they can be biased based on their extensive training data. Moreover, because of the dataset size, it is impossible to validate each output of the LLM, and thus, we are not able to 100\% guarantee the quality of the results.
+Our pipeline is not meant to be relied upon nor to replace a human fact-checker, but rather to assist an informed user. It gives sources and proposed labels for further questioning. It is optimized only for English, the carbon costs of the used models are considerable, despite the system trying to cut down the environmental cost of the prediction step.
 
 \section*{Ethics statement}
-It is essential to note that our pipeline is not a real fact-checker that could do a human job but rather a study of future possibilities in automatic fact-checking and a showcase of the current capabilities of state-of-the-art language models. The pipeline in its current state should only be used with human supervision because of the potential biases and errors that could harm the consumers of the output information or persons mentioned in the claims. The pipeline could be misused to spread misinformation by directly using misinformation sources or by intentionally modifying the pipeline in a way that will generate wrong outputs.
-
-Another important statement is that our pipeline was in its current form explicitly built for the \averitec{} shared task, and thus, the evaluation results reflect the bias of the annotators. For more information, see the relevant section of the original paper~\cite{averitec2024}.
-
-The carbon costs of the training and running of our pipeline are considerable and should be taken into account given the urgency of climate change. At the time of deployment, the pipeline should be run on the smallest possible model that can still provide reliable results, and the latest hardware and software optimisations should be used to minimise the carbon footprint.
-
+Our pipeline is an extension of our already existing last year submission all original authors agreed with, including the reusal of the necessary listing in Appendix~\ref{appendix_sec:system_prompt}.
+The system was build specifically for the~\averitec~shared task and reflects the biases of its annotators, for more information on this, we suggest the original AVeriTeC paper~\cite{averitec2024}.
 \section*{Acknowledgements}
 This article was created with the state support of the Ministry of Industry and Trade of the Czech Republic, project no. Z220312000000, within the National Recovery Plan Programme.
 The access to the computational infrastructure of the OP VVV funded project CZ.02.1.01/0.0/0.0/16\_019/0000765 ``Research Center for Informatics'' is also gratefully acknowledged.
@@ -139,6 +131,7 @@ The access to the computational infrastructure of the OP VVV funded project CZ.0
 \appendix
 
 \include{src/appendix_a_llms}
+\include{src/appendix_b_think}
 %\include{src/appendix_b_opensource}
 %\include{src/appendix_c_errors}
 

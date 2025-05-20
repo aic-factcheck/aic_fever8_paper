@@ -1,0 +1,50 @@
+%!TEX ROOT=../emnlp2023.tex
+
+\label{appendix_sec:think}
+
+
+\lstset{
+    language={},
+    basicstyle=\ttfamily\footnotesize\linespread{0.9}, % Smaller font with less spacing
+    keywordstyle=\color{blue}\bfseries,
+    commentstyle=\color{green!50!black}\itshape,
+    stringstyle=\color{orange},
+    numberstyle=\tiny\color{gray},
+    numbers=none, % Line numbers on the left
+    stepnumber=1, % Line numbers for every line
+    numbersep=5pt, % Space between line numbers and code
+    tabsize=4, % Size of tabs
+    showstringspaces=false, % Don't show spaces in strings
+    breaklines=true, % Line wrapping
+    breakatwhitespace=true,
+    frame=lines, % Add a frame around the code
+    captionpos=b, % Caption at the 
+    breakindent=1em,
+}
+\begin{figure*}
+    \section{Qwen3 thinking example}
+    \label{appendix_sec:think}
+    \begin{lstlisting}[breaklines=true, language={}, frame=single, caption={Qwen3 thinking tokens example.}, label={lst:think}]
+<think>
+Okay, let's tackle this query. The user is claiming that due to Imran Khan's criticism of Macron's comments on Islam, French authorities cancelled the visas of 183 Pakistani citizens and deported 118 from the country. I need to verify this using the provided sources.
+
+First, I'll look through the sources to see if there's any mention of visa cancellations or deportations related to Imran Khan's criticism. 
+
+Looking at Source ID 1, it talks about Imran Khan responding to Macron's remarks and the condemnation of Islamophobic policies, but there's no mention of visa cancellations or deportations. 
+
+Source ID 2 discusses a diplomatic row where Pakistan refused to accept a deportee, Muhammad Mansha, until his credentials were verified. This seems related to a specific case but not the large numbers mentioned in the claim.
+
+Source ID 3 mentions protests in Pakistan against France's republishing of cartoons, but again, no visa or deportation numbers here.
+
+Source ID 4 and 5 discuss diplomatic tensions, but not specific numbers of deportations. Source 5 and 6 from Newscomworld.com talk about fears of deportations of Pakistanis in France but don't mention specific numbers like 183 or 118.
+
+Source ID 7 is about Pakistan deporting French nationals, which is the reverse of the claim. 
+
+Source ID 10 mentions Pakistan summoning the French envoy but again, no numbers on deportations.
+
+None of the sources mention 183 visas cancelled or 118 deported. The closest is Source 2, which mentions one individual, Muhammad Mansha, but that's a single case. The other sources discuss diplomatic tensions, protests, and possible fears of deportations but no actual numbers provided. 
+
+Therefore, the claim about 183 and 118 seems to be unsupported. The answer would be that there's no evidence of such numbers in the sources provided. The veracity verdict would be Refuted, as the sources don't support the specific numbers given.
+</think>
+    \end{lstlisting}
+\end{figure*}
