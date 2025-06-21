@@ -35,7 +35,7 @@ The main differences between this year's AIC \averitec{} system, opposed to last
 \label{sec:choices}
 To produce our submission in the \averitec{} shared task, the following choices were made to deploy the pipeline from section~\ref{sec:system}:
 
-\texttt{mxbai-embed-large-v1}~\cite{li-li-2024-aoe,emb2024mxbai} is used for the vector embeddings, and the maximum chunk size is set to 2048 characters, considering its input size of 512 tokens and a rule-of-thumb coeffitient of 4 characters per token to exploit the full embedding input size and produce the smallest possible vector store size without neglecting a significant proportion of knowledge store text.
+\texttt{mxbai-embed-large-v1}~\cite{li-li-2024-aoe,emb2024mxbai} is used for the vector embeddings, and the maximum chunk size is set to 2048 characters, considering its input size of 512 tokens and a rule-of-thumb coefficient of 4 characters per token to exploit the full embedding input size and produce the smallest possible vector store size without neglecting a significant proportion of knowledge store text.
 
 \texttt{FAISS}~\cite{douze2024faiss,johnson2019billion} index is used as the vector database engine, due to its simplicity of usage, exact search feature and quick retrieval times (sub-second for a single \averitec{} test claim).
 

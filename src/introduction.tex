@@ -11,15 +11,16 @@ This raised a concern -- can the fact-checking process be automated in a way acc
 
 In this year's~\averitec{} shared task, the challenge is to match the quality of AVeriTeC systems with ones that only use open-weights models, constrained time of 60 seconds per claim on average, and a fixed compute of a single 23GB A10 GPU.
 
-Our AIC CTU system (Figure~\ref{fig:pipeline}), adapted for \averitec{} from our last year submission, tops its test-leaderboard (Table~\ref{tab:leaderboard}) with a simple Retrieval-augmented Generation (RAG) scheme, using a locally hosted (Ollama) instance of Qwen3 LLM with 14B parameters, leveraging the sheer context length modern-day LLMs can process.
-
+Our AIC CTU system (Figure~\ref{fig:pipeline}), adapted for \averitec{} from our last year submission, tops its test-leaderboard (Table~\ref{tab:leaderboard}) with a simple Retrieval-augmented Generation (RAG) scheme, using a locally hosted (Ollama) instance of Qwen3 LLM with 14B parameters, leveraging the sheer
 %\vspace{-.5em}
 \begin{minipage}{\linewidth}
     \centering
     \includegraphics[width=\linewidth]{figures/pipeline.pdf}
     \captionof{figure}{Our refreshed fact-checking pipeline used in CTU AIC FEVER 8 submission, adapted from~\citealt{ullrich-etal-2024-aic}.}
     \label{fig:pipeline}
+\vspace{1em}
 \end{minipage}
+context length modern-day LLMs can process.
 
 This paper introduces our system, discusses its design choices and how do they account on the score.
 We suggest our system as the new strong baseline -- simple at core, competitive results -- providing the code and reproduction advice.
